@@ -26,7 +26,9 @@ B.	BENCHMARK
 -------------------------------------------------------------------------------
 How to use:
 	
-	To init the sequencer with a an imageset of files from "pics/pig/DSC04701.JPG" to "pics/pig/DSC04775.JPG"
+	To init the sequencer with a an imageset of files 
+	from "pics/pig/DSC04701.JPG" to "pics/pig/DSC04775.JPG":
+	
 	var config = {from:4701, to: 4775, folder:"pics/pig", baseName:"DSC0", ext:"JPG"};
 	Sequencer.init(config); 
 	Check the source code for a description of all the options.
