@@ -22,7 +22,6 @@ be dropped in future versions in favor of a single one.
 	The canvas is then stretched and positioned correctly via css.	
 B.	BENCHMARK
 	Image sequencer benchmark
-	Press 'b' to run the test. Press 'b' again to stop it.
 	Not sure if this is reliable: it looks as though some browsers skip frames 
 	to keep up with the interval event.
 
