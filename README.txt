@@ -1,7 +1,10 @@
 -------------------------------------------------------------------------------
 Sequencer - A fast(?) fullscreen image-sequence player.
 
-There are actually 4 different versions of this library plus a benchmark test:
+To keep the library light and simple there are actually 4 different versions 
+of it plus a benchmark test. They were built to test speed and will eventually
+be dropped in future versions in favor of a single one.
+
 1.	BG
 	Displays the images as the body background. The images can be stretched with
 	the CSS "auto", "cover" and "contain" modes.
@@ -28,9 +31,9 @@ How to use:
 	To init the sequencer with a an imageset of files 
 	from "pics/pig/DSC04701.JPG" to "pics/pig/DSC04775.JPG":
 	
-	var config = {from:4701, to: 4775, folder:"pics/pig", baseName:"DSC0", ext:"JPG"};
+	var config = {from:4701, to:4775, folder:"pics/pig", baseName:"DSC0", ext:"JPG"};
 	Sequencer.init(config); 
-	Check the source code for a description of all the options.
+	Check the source code for a description of all the options and the default values.
 	
 	To change playMode:
 	Sequencer.setplayMode("mouse");
