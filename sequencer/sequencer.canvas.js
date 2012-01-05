@@ -183,7 +183,8 @@ var Sequencer = (function(){
 				
 		document.body.style.margin ="0";
 		document.body.style.padding ="0";
-		document.body.style.height = "100%";	
+		document.body.style.height = "100%";
+		document.body.style.overflow = "hidden"; //canvas is a few pixels taller than innerHeight… (?)			
 		document.body.style.backgroundColor = config.bgColor;
 	}
 	
