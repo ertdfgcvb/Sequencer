@@ -25,7 +25,6 @@ B.	BENCHMARK
 
 -------------------------------------------------------------------------------
 How to use:
-	
 	To init the sequencer with a an imageset of files 
 	from "pics/pig/DSC04701.JPG" to "pics/pig/DSC04775.JPG":
 	
@@ -42,6 +41,9 @@ How to use:
 	otherwise it is possible to call frame advancement manually with
 	Sequencer.nextImage();	
 
+-------------------------------------------------------------------------------
+Benchmark:
+	Just include the sequencer.benchmark.js file to test your sequence.
 
 -------------------------------------------------------------------------------
 Author: 
