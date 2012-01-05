@@ -48,7 +48,7 @@ Author:
 	
 Project page:
 	http://ertdfgcvb.com/p2/sm
-	http://github.com	
+	http://github.com/ertdfgcvb/Sequencer	
 	
 -------------------------------------------------------------------------------
 Copyright (c) 2011-2012 Andreas Gysin
