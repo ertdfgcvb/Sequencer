@@ -6,7 +6,7 @@ of it plus a benchmark test. They were built to test speed and will eventually
 be dropped in future versions in favor of a single one.
 
 1.	BG
-	Displays the images as the body background. The images can be stretched with
+	Displays the images as the body background. The images are stretched with
 	the CSS "auto", "cover" and "contain" modes.
 	I didn't find a way to pass an image object to the CSS background so this 
 	version relies heavily on the browser's cache.
