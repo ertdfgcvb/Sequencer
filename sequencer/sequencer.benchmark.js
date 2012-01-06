@@ -15,8 +15,6 @@ github.com
 
 var Benchmark = (function(){	
 	var INTERVAL = 10; //refresh interval: in an ideal case the frameRate would be 100fps
-	var RESIZE_X = 1200;
-	var RESIZE_Y = 760;
 	var benchmark = {};
 	var output;
 	var config = {};
@@ -30,7 +28,7 @@ var Benchmark = (function(){
 			
 	function start(){
 		Sequencer.stop();
-		window.resizeTo(RESIZE_X, RESIZE_Y);
+		//window.resizeTo(1200, 760);
 		if (benchmark.interval) clearInterval(benchmark.interval);
 		benchmark.start = new Date().getTime();
 		benchmark.numFrames = 0;
@@ -81,8 +79,8 @@ var Benchmark = (function(){
 		benchmark.interval = null;
 		var elapsed = new Date().getTime() - benchmark.start;
 		var avg = benchmark.numFrames / elapsed * 1000;
-		output.innerHTML = "size: " + RESIZE_X + "x" + RESIZE_Y + "<br/>";
-		output.innerHTML = "interval: " + INTERVAL + "<br/>";
+		output.innerHTML = "size: " + window.innerWidth + "x" + window.innerHeight + "<br/>";
+		output.innerHTML += "interval: " + INTERVAL + "<br/>";
 		output.innerHTML += "elapsed: " + elapsed + "<br/>";
 		output.innerHTML += "frames: " + benchmark.numFrames + "<br/>";  
 		output.innerHTML += "average: " + avg.toFixed(1) + " fps<br/>";  
