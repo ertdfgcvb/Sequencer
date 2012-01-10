@@ -51,7 +51,7 @@ var Sequencer = (function(){
 		window.onload = function(){
         	configureBody();
         	buildProgress(config.progressMode);	
-			loadNext();
+			for (var i=0; i<10; i++) loadNext();
 		}
 		window.addEventListener( 'resize', onWindowResize, false );
 	}
@@ -193,14 +193,15 @@ var Sequencer = (function(){
 		var num = config.from + current * config.step;
 		if (num <= config.to) {		 
 			var img = new Image();
+			img.listId = current;
 			img.src = config.folder + "/" + config.baseName + num + "." + config.ext;
 			img.onload = function(){
-				imgList.push(this);				
+				imgList[this.listId] = this;				
 				if (config.progressShowImages) showImage(current);
 				if (progress) progress.update(current);
 				loadNext(); 	
 			}		
-		} else {
+		} else if (num == config.to + 1){ //last call...
 			current = imgList.length - 1;
 			if (progress) {
 				document.body.removeChild(progress);

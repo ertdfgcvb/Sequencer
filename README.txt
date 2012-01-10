@@ -1,26 +1,30 @@
 -------------------------------------------------------------------------------
 Sequencer - A fast(?) fullscreen image-sequence player.
 
-To keep the library light and simple there are actually 4 different versions 
-of it plus a benchmark test. They were built to test speed and will eventually
+To keep the library light and simple there are actually 5 different versions 
+of it plus a benchmark test. They were built to test display-speed and will eventually
 be dropped in future versions in favor of a single one.
 
-1.	BG
+1.	sequencer.bg.js
 	Displays the images as the body background. The images are stretched with
 	the CSS "auto", "cover" and "contain" modes.
 	I didn't find a way to pass an image object to the CSS background so this 
 	version relies heavily on the browser's cache.
-2.	DIV
+2.	sequencer.div.js
 	Displays the images as a stack of divs hiding and showing the corresponding 
 	layer. This version relies a bit on the browser cache, but once loaded 
 	the images are stored as a div background.
-3.	CANVAS
+3.	sequencer.canvas.js
 	Displays the images on a canvas object the size of the browser window. 
 	The images are preloaded and then stretched and cropped on the canvas.
-4.	CANVAS2
+4.	sequencer.canvas2.js
 	Displays the images on a canvas object the size of the first loaded image. 
 	The canvas is then stretched and positioned correctly via css.	
-B.	BENCHMARK
+5.	sequencer.canvas.async.js
+	Loads the sequence asynchronously. 
+	It's a messy work in progress right now, but loading times are 4-5 times faster.
+	This will eventually become the final version.
+B.	sequencer.benchmark.js
 	Image sequencer benchmark
 	Not sure if this is reliable: it looks as though some browsers skip frames 
 	to keep up with the interval event.
