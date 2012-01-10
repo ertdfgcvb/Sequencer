@@ -10,140 +10,13 @@ ertdfgcvb.com
 	
 Project page:
 ertdfgcvb.com/p2/sm
-github.com	
+github.com/ertdfgcvb/Sequencer	
 */
 
 /*
 iamges are passed around per array indexes (id) this may change
 */
 
-var Preloader = (function(){
-	var progress;
-	var queue;
-	var images;
-	var loaded = 0; 
-	var onImageLoadedf, onPreloadCompletef; //needs a better way. Override?
-	
-		
-	function init(config, arrayToPopulate, onImageLoaded, onPreloadComplete){
-
-		images = arrayToPopulate; //the sequencer array will be populated with the loaded images, this could ev. add some flexibility for future features
-		onImageLoadedf = onImageLoaded;
-		onPreloadCompletef = onPreloadComplete;
-			
-    	var tot = Math.floor((config.to - config.from + 1) / config.step);
-    	queue = new Array(tot);
-    	//images = new Array(tot);
-		
-		buildProgress(config);	
-    	
-    	for (var i=0; i<tot; i++){
-	    	var num = config.from + i * config.step;
-    		var src = config.folder + "/" + config.baseName + num + "." + config.ext;
-    		queue[i] = {src : src, id : i}; //two distinct arrays just to keep a "clean" image list instead of a custom loaderObject list, maybe this is overcomplicated
-    		images[i] = new Image(); 
-    	}
-    	
-    	for (var i=0; i<config.simultaneousLoads; i++){
-    		loadNext();
-		}
-    }
-	
-	function onPreloadComplete(e){
-		//console.log(e.length + " images loaded.");
-		if (onPreloadCompletef) onPreloadCompletef(e); //needs absolutely a better way
-	}
-	
-	function onImageLoaded(e){
-		//console.log("loaded image [" + e.id + "]");
-		if (onImageLoadedf) onImageLoadedf(e); //needs absolutely a better way
-	}
-		
-	function loadNext(){
-		if (queue.length > 0){
-			var o = queue.shift();
-			images[o.id].src = o.src;
-			//images[o.id].id = o.id; // UGLY HACK!
-			images[o.id].onload = function(){
-				var id = images.indexOf(this); //not the fastest way to get an id. should be stored in a property somewhere. loaderObject?
-				onImageLoaded({img:this, id:id});
-				progress.update(loaded);
-				loaded++;
-				if (loaded == images.length ){
-					removeProgress();
-					onPreloadComplete({images:images, length:images.length});
-				} else {
-					loadNext();
-				}				
-			}
-		}
-	}
-	
-	function buildProgress(config){
-		if (config.progressMode == "circle"){
-			progress = document.createElement('div');
-			progress.id = "progress";
-			progress.style.width = config.progressDiam + "px";
-	    	progress.style.height = config.progressDiam + "px";
-	    	progress.style.lineHeight = config.progressDiam + "px";
-	    	progress.style.textAlign = "center";
-	    	progress.style.color = config.progressFgColor;
-	    	progress.style.backgroundColor = config.progressBgColor;
-	    	progress.style.borderRadius = config.progressDiam / 2 + "px";
-	    	progress.style.position = "fixed";
-	    	progress.style.left = "50%";
-	    	progress.style.top = "50%";
-	    	progress.style.marginTop = - config.progressDiam / 2 + "px";
-	    	progress.style.marginLeft = - config.progressDiam / 2 + "px";
-	    	progress.style.fontFamily = config.progressFontFamily;
-	    	progress.style.fontSize = config.progressFontSize;
-	    	progress.style.zIndex = 1000;
-	    	progress.update = function(num){
-	    		var t = Math.floor((config.to - config.from + 1) / config.step);
-				progress.innerHTML = (num + 1) + "/" + t;
-	    	}
-			document.body.appendChild(progress);
-		} else if (config.progressMode == "bar") {
-			progress = document.createElement('div');
-			progress.id = "progress";
-			progress.style.width = "0%";
-	    	progress.style.height = config.progressHeight + "px";
-	    	progress.style.backgroundColor = config.progressBgColor;
-	    	progress.style.position = "fixed";
-	    	progress.style.left = "0";
-			progress.style.height = config.progressHeight;
-	    	progress.style.bottom = "0";
-	    	progress.style.zIndex = 1000;
-	    	progress.update = function(num){
-	    		var p = Math.round(num / (config.to - config.from) * 100);
-				progress.style.width = p + "%";
-	    	}
-			document.body.appendChild(progress);
-		}
-	}
-	
-	function removeProgress(){
-		if (progress) {
-			document.body.removeChild(progress);
-			progress = null;
-		}
-	}
-	
-	if (!Array.prototype.indexOf){
-		Array.prototype.indexOf = function(elt /*, from*/){
-			var len = this.length;
-			var from = Number(arguments[1]) || 0;
-			from = (from < 0) ? Math.ceil(from) : Math.floor(from);
-			if (from < 0) from += len;
-			for (; from < len; from++){
-				if (from in this && this[from] === elt) return from;
-			}
-			return -1;
-		};
-	}
-		
-	return {init : init, images : images};
-})();
 
 var Sequencer = (function(){	
 	var current = -1;
@@ -173,7 +46,7 @@ var Sequencer = (function(){
 		progressMode		: "circle",		// can be: circle, bar, none
 		progressHeight		: "5px",		// if progressMode == "bar"
 		progressShowImages	: true,			// display images while loaded	
-		simultaneousLoads	: 1,			// how many images to load simultaneously	
+		simultaneousLoads	: 4,			// how many images to load simultaneously, browser limit is 4?	
 	}
 		
 	function init(customConfig){
@@ -187,11 +60,11 @@ var Sequencer = (function(){
 			Preloader.init(config, images, onImageLoaded, onPreloadComplete);	
 		}
 	
-		window.addEventListener( 'resize', onWindowResize, false );
+		window.addEventListener( 'resize', onWindowResize, false );		
 	}
 	
 	function onImageLoaded(e){
-		if (e.id > lastLoaded){ // to not have a hickup… but not all'images will be shown
+		if (e.id > lastLoaded && config.progressShowImages){ // to not have a back and forward hickup… but some images will be skipped
 			showImage(e.id);
 			lastLoaded = e.id;
 		}
@@ -200,7 +73,6 @@ var Sequencer = (function(){
 	function onPreloadComplete(e){
 		setPlayMode(config.playMode);
 		play();
-	
 	}
 	
 	function setPlayMode(mode){
@@ -330,3 +202,134 @@ var Sequencer = (function(){
 	return {init : init, nextImage : nextImage, setPlayMode : setPlayMode, play : play, stop : stop};
 })();
 
+var Preloader = (function(){
+	var progress;
+	var queue;
+	var images;
+	var loaded = 0; 
+	var onImageLoadedf, onPreloadCompletef; //needs a better way. Override?
+	
+		
+	function init(config, arrayToPopulate, onImageLoaded, onPreloadComplete){
+
+		images = arrayToPopulate; //the array that will be populated with the loaded images
+		onImageLoadedf = onImageLoaded; //event functions… crappy way.
+		onPreloadCompletef = onPreloadComplete;
+			
+    	var tot = Math.floor((config.to - config.from + 1) / config.step);
+    	queue = new Array(tot);
+    	//images = new Array(tot);
+		
+		buildProgress(config);	
+    	
+    	for (var i=0; i<tot; i++){
+	    	var num = config.from + i * config.step;
+    		var src = config.folder + "/" + config.baseName + num + "." + config.ext;
+    		queue[i] = {src : src, id : i}; //two distinct arrays just to keep a "clean" image list instead of a custom loaderObject list, maybe this approach is overcomplicated
+    		images[i] = new Image(); 
+    	}
+    	
+    	setTimeout(function(){ //give it a bit of breath… safari needs to need that.
+    		var num = Math.max(1, config.simultaneousLoads);
+    		for (var i=0; i<num; i++){
+    			loadNext();
+			};
+		}, 300); 
+    }
+	
+	function onPreloadComplete(e){
+		//console.log(e.length + " images loaded.");
+		if (onPreloadCompletef) onPreloadCompletef(e); //needs absolutely a better way
+	}
+	
+	function onImageLoaded(e){
+		//console.log("loaded image [" + e.id + "]");
+		if (onImageLoadedf) onImageLoadedf(e); //needs absolutely a better way
+	}
+		
+	function loadNext(){
+		if (queue.length > 0){
+			var o = queue.shift();
+			images[o.id].src = o.src;
+			//images[o.id].id = o.id; // UGLY HACK!
+			images[o.id].onload = function(){
+				var id = images.indexOf(this); //not the fastest way to get an id. should be stored in a property somewhere. loaderObject?
+				onImageLoaded({img:this, id:id});
+				progress.update(loaded);
+				loaded++;
+				if (loaded == images.length ){
+					removeProgress();
+					onPreloadComplete({images:images, length:images.length});
+				} else {
+					loadNext();
+				}				
+			}
+		}
+	}
+	
+	function buildProgress(config){
+		if (config.progressMode == "circle"){
+			progress = document.createElement('div');
+			progress.id = "progress";
+			progress.style.width = config.progressDiam + "px";
+	    	progress.style.height = config.progressDiam + "px";
+	    	progress.style.lineHeight = config.progressDiam + "px";
+	    	progress.style.textAlign = "center";
+	    	progress.style.color = config.progressFgColor;
+	    	progress.style.backgroundColor = config.progressBgColor;
+	    	progress.style.borderRadius = config.progressDiam / 2 + "px";
+	    	progress.style.position = "fixed";
+	    	progress.style.left = "50%";
+	    	progress.style.top = "50%";
+	    	progress.style.marginTop = - config.progressDiam / 2 + "px";
+	    	progress.style.marginLeft = - config.progressDiam / 2 + "px";
+	    	progress.style.fontFamily = config.progressFontFamily;
+	    	progress.style.fontSize = config.progressFontSize;
+	    	progress.style.zIndex = 1000;
+	    	progress.innerHTML = "loading";
+	    	progress.update = function(num){
+	    		var t = Math.floor((config.to - config.from + 1) / config.step);
+				progress.innerHTML = (num + 1) + "/" + t;
+	    	}
+			document.body.appendChild(progress);
+		} else if (config.progressMode == "bar") {
+			progress = document.createElement('div');
+			progress.id = "progress";
+			progress.style.width = "0%";
+	    	progress.style.height = config.progressHeight + "px";
+	    	progress.style.backgroundColor = config.progressBgColor;
+	    	progress.style.position = "fixed";
+	    	progress.style.left = "0";
+			progress.style.height = config.progressHeight;
+	    	progress.style.bottom = "0";
+	    	progress.style.zIndex = 1000;
+	    	progress.update = function(num){
+	    		var p = Math.round(num / (config.to - config.from) * 100);
+				progress.style.width = p + "%";
+	    	}
+			document.body.appendChild(progress);
+		}
+	}
+	
+	function removeProgress(){
+		if (progress) {
+			document.body.removeChild(progress);
+			progress = null;
+		}
+	}
+	
+	if (!Array.prototype.indexOf){
+		Array.prototype.indexOf = function(elt /*, from*/){
+			var len = this.length;
+			var from = Number(arguments[1]) || 0;
+			from = (from < 0) ? Math.ceil(from) : Math.floor(from);
+			if (from < 0) from += len;
+			for (; from < len; from++){
+				if (from in this && this[from] === elt) return from;
+			}
+			return -1;
+		};
+	}
+		
+	return {init : init, images : images};
+})();
