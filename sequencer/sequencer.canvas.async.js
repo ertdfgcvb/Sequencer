@@ -9,8 +9,8 @@ ertdfgcvb.com
 @andreasgysin
     
 Project page:
-ertdfgcvb.com/p2/sm
-github.com/ertdfgcvb/Sequencer  
+http://ertdfgcvb.com/sequencer
+http://github.com/ertdfgcvb/Sequencer  
 */
 
 /*

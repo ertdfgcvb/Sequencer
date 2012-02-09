@@ -10,7 +10,7 @@ ertdfgcvb.com
     
 Project page:
 http://ertdfgcvb.com/sequencer
-github.com/ertdfgcvb/Sequencer  
+http://github.com/ertdfgcvb/Sequencer  
 */
 
 var Benchmark = (function(){    
