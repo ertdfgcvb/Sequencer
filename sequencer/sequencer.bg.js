@@ -1,16 +1,16 @@
-/*
+/**
 Sequencer - A fast(?) fullscreen image-sequence player.
 (c) 2012
-See README.txt for details
+See README.txt or visit github (link below) for details
 
 Author: 
 Andreas Gysin
 ertdfgcvb.com
 @andreasgysin
-	
+    
 Project page:
-ertdfgcvb.com/p2/sm
-github.com	
+http://ertdfgcvb.com/sequencer
+http://github.com/ertdfgcvb/Sequencer  
 */
 
 var Sequencer = (function(){
