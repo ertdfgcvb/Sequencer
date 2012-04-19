@@ -57,7 +57,7 @@ Author:
 	@andreasgysin
 	
 Project page:
-	http://ertdfgcvb.com/p2/sm
+	http://ertdfgcvb.com/sequencer
 	http://github.com/ertdfgcvb/Sequencer	
 	
 -------------------------------------------------------------------------------
