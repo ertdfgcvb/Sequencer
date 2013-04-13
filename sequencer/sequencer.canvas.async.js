@@ -31,11 +31,12 @@ var Sequencer = (function(){
         baseName            : "",           // a basename of the files, for example "DSC00"
         from                : 1,            // first image of the sequence, will be combined with the basename
         to                  : 10,           // last image of the sequence
+        leadingZeroes       : 0,
         ext                 : "jpg",        // file extention, case sensitive
         step                : 1,            // increment: to load only even images use 2, etc
         bgColor             : "#FFFFFF",    // page background color
         scaleMode           : "cover",      // as in CSS3, can be: auto, cover, contain
-        mouseDirection      : "x",          // mouse direction, can be x, -x, y, -y, applies only if playMode == "mouse"
+        direction           : "x",          // mouse direction, can be x, -x, y, -y, applies only if playMode == "mouse"
         playMode            : "mouse",      // can be: mouse, loop, pong or none (in this case a nextImage() call has to be made somewhere
         playInterval        : 20,           // interval in milliseconds beteen each frame, applies only if playMode != "mouse"  
         progressDiam        : "110",        // progress diameter
@@ -122,16 +123,16 @@ var Sequencer = (function(){
     function onMouseMove(e){
         var t = images.length;
         var m, w;
-        if (config.mouseDirection == "x") {
+        if (config.direction == "x") {
             w = window.innerWidth;
             m = e.pageX;
-        } else if (config.mouseDirection == "-x") {
+        } else if (config.direction == "-x") {
             w = window.innerWidth;
             m = w - e.pageX - 1;
-        } else if (config.mouseDirection == "y") {
+        } else if (config.direction == "y") {
             w = window.innerHeight;
             m = e.pageY;
-        } else if (config.mouseDirection == "-y") {
+        } else if (config.direction == "-y") {
             w = window.innerHeight;
             m = w - e.pageY - 1;
         }
@@ -199,7 +200,13 @@ var Sequencer = (function(){
         }
     }
     
-    return {init : init, nextImage : nextImage, setPlayMode : setPlayMode, play : play, stop : stop};
+    return {
+        init : init, 
+        nextImage : nextImage, 
+        setPlayMode : setPlayMode, 
+        play : play, 
+        stop : stop
+    };
 })();
 
 var Preloader = (function(){
@@ -207,14 +214,14 @@ var Preloader = (function(){
     var queue;
     var images;
     var loaded = 0; 
-    var onImageLoadedf, onPreloadCompletef; //needs a better way. Override?
+    var onImageLoadedCallback, onPreloadCompleteCallback; //needs a better way. Override?
     
         
     function init(config, arrayToPopulate, onImageLoaded, onPreloadComplete){
 
         images = arrayToPopulate; //the array that will be populated with the loaded images
-        onImageLoadedf = onImageLoaded; //event functions… crappy way.
-        onPreloadCompletef = onPreloadComplete;
+        onImageLoadedCallback = onImageLoaded; //event functions… crappy way.
+        onPreloadCompleteCallback = onPreloadComplete;
             
         var tot = Math.floor((config.to - config.from + 1) / config.step);
         queue = new Array(tot);
@@ -224,6 +231,7 @@ var Preloader = (function(){
         
         for (var i=0; i<tot; i++){
             var num = config.from + i * config.step;
+            if (config.leadingZeroes > 0) num = (1e15+num+"").slice(-config.leadingZeroes);
             var src = config.folder + "/" + config.baseName + num + "." + config.ext;
             queue[i] = {src : src, id : i}; //two distinct arrays just to keep a "clean" image list instead of a custom loaderObject list, maybe this approach is overcomplicated
             images[i] = new Image(); 
@@ -236,15 +244,17 @@ var Preloader = (function(){
             };
         }, 300); 
     }
+
+
     
     function onPreloadComplete(e){
         //console.log(e.length + " images loaded.");
-        if (onPreloadCompletef) onPreloadCompletef(e); //needs absolutely a better way
+        if (typeof onPreloadCompleteCallback === 'function') onPreloadCompleteCallback(e); //needs absolutely a better way
     }
     
     function onImageLoaded(e){
         //console.log("loaded image [" + e.id + "]");
-        if (onImageLoadedf) onImageLoadedf(e); //needs absolutely a better way
+        if (typeof onImageLoadedCallback === 'function') onImageLoadedCallback(e); //needs absolutely a better way
     }
         
     function loadNext(){
@@ -331,5 +341,8 @@ var Preloader = (function(){
         };
     }
         
-    return {init : init, images : images};
+    return {
+        init : init, 
+        images : images
+    };
 })();
