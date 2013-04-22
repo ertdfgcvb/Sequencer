@@ -1,23 +1,18 @@
-/**
-Sequencer - A fast(?) fullscreen image-sequence player.
-(c) 2012
-See README.txt or visit github (link below) for details
-
-Author: 
-Andreas Gysin
-ertdfgcvb.com
-@andreasgysin
-    
-Project page:
-http://ertdfgcvb.com/sequencer
-http://github.com/ertdfgcvb/Sequencer  
-*/
-
-/*
-iamges are passed around per array indexes (id) this may change
-*/
+// Sequencer - A fast(?) fullscreen image-sequence player.
+// (c) 2012-13
+// See README.txt or visit github (link below) for details
+// 
+// Author: 
+//      Andreas Gysin
+//      ertdfgcvb.com
+//      @andreasgysin
+//    
+// Project page:
+//      http://ertdfgcvb.com/sequencer
+//      http://github.com/ertdfgcvb/Sequencer  
 
 
+// images are passed around per array indexes (id) this may change
 var Sequencer = (function(){    
     var current = -1;
     var images = [];
@@ -265,7 +260,7 @@ var Preloader = (function(){
             images[o.id].onload = function(){
                 var id = images.indexOf(this); //not the fastest way to get an id. should be stored in a property somewhere. loaderObject?
                 onImageLoaded({img:this, id:id});
-                progress.update(loaded);
+                if (progress) progress.update(loaded);
                 loaded++;
                 if (loaded == images.length ){
                     removeProgress();
@@ -328,8 +323,10 @@ var Preloader = (function(){
         }
     }
     
+
+    // Array fix...
     if (!Array.prototype.indexOf){
-        Array.prototype.indexOf = function(elt /*, from*/){
+        Array.prototype.indexOf = function(elt){
             var len = this.length;
             var from = Number(arguments[1]) || 0;
             from = (from < 0) ? Math.ceil(from) : Math.floor(from);
