@@ -13,7 +13,7 @@
 
 
 // images are passed around per array indexes (id) this may change
-var Sequencer = (function(){    
+var Sequencer = (function () {
     var current = -1;
     var images = [];
     var playInterval;
@@ -42,18 +42,18 @@ var Sequencer = (function(){
         progressMode        : "circle",     // can be: circle, bar, none
         progressHeight      : "5px",        // if progressMode == "bar"
         progressShowImages  : true,         // display images while loaded  
-        simultaneousLoads   : 4,            // how many images to load simultaneously, browser limit is 4?  
-    }
+        simultaneousLoads   : 4            // how many images to load simultaneously, browser limit is 4?  
+    };
         
     function init(customConfig){
         // config override
-        for(prop in customConfig){ 
+        for(prop in customConfig){
             config[prop] = customConfig[prop];
         }
 
         window.onload = function(){
             configureBody();
-            Preloader.init(config, images, onImageLoaded, onPreloadComplete);   
+            Preloader.init(config, images, onImageLoaded, onPreloadComplete);
         }
     
         window.addEventListener( 'resize', onWindowResize, false );     
@@ -78,13 +78,13 @@ var Sequencer = (function(){
     
     function play(){
         stop();
-        if (config.playMode == "mouse"){
+        if (config.playMode === 'mouse'){
             document.addEventListener('mousemove', onMouseMove, false);
             document.ontouchmove = function(e){
                 onMouseMove(e.touches[0]);
                 return false;
             }
-        } else if (config.playMode == "loop" || config.playMode == "pong") {
+        } else if (config.playMode === 'loop' || config.playMode === 'pong') {
             playInterval = setInterval(nextImage, config.playInterval);
         }
     }   
@@ -93,13 +93,13 @@ var Sequencer = (function(){
         document.removeEventListener('mousemove', onMouseMove);
         if (playInterval) {
             clearInterval(playInterval);
-            playInterval == null;
+            playInterval = null;
         }
     }
             
     function nextImage(mode){
         if (!mode) mode = config.playMode;
-        if(mode == "pong") {
+        if(mode === 'pong') {
             current += playDir;
             if (current >= images.length-1) { //current could ev. change by other playmodes, so extra-checks are necessary
                 playDir = -1;
