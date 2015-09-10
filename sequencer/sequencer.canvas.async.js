@@ -1,15 +1,15 @@
 // Sequencer - A fast(?) fullscreen image-sequence player.
 // (c) 2012-13
 // See README.txt or visit github (link below) for details
-// 
-// Author: 
+//
+// Author:
 //      Andreas Gysin
 //      ertdfgcvb.com
 //      @andreasgysin
-//    
+//
 // Project page:
 //      http://ertdfgcvb.com/sequencer
-//      http://github.com/ertdfgcvb/Sequencer  
+//      http://github.com/ertdfgcvb/Sequencer
 
 
 // images are passed around per array indexes (id) this may change
@@ -33,7 +33,7 @@ var Sequencer = (function () {
         scaleMode           : "cover",      // as in CSS3, can be: auto, cover, contain
         direction           : "x",          // mouse direction, can be x, -x, y, -y, applies only if playMode == "mouse"
         playMode            : "mouse",      // can be: mouse, loop, pong or none (in this case a nextImage() call has to be made somewhere
-        playInterval        : 20,           // interval in milliseconds beteen each frame, applies only if playMode != "mouse"  
+        playInterval        : 20,           // interval in milliseconds beteen each frame, applies only if playMode != "mouse"
         progressDiam        : "110",        // progress diameter
         progressFontFamily  : "Helvetica, Arial, sans-serif",
         progressFontSize    : "0.7em",
@@ -41,10 +41,10 @@ var Sequencer = (function () {
         progressFgColor     : "#FFFFFF",
         progressMode        : "circle",     // can be: circle, bar, none
         progressHeight      : "5px",        // if progressMode == "bar"
-        progressShowImages  : true,         // display images while loaded  
-        simultaneousLoads   : 4            // how many images to load simultaneously, browser limit is 4?  
+        progressShowImages  : true,         // display images while loaded
+        simultaneousLoads   : 4            // how many images to load simultaneously, browser limit is 4?
     };
-        
+
     function init(customConfig){
         // config override
         for(prop in customConfig){
@@ -55,27 +55,27 @@ var Sequencer = (function () {
             configureBody();
             Preloader.init(config, images, onImageLoaded, onPreloadComplete);
         }
-    
-        window.addEventListener( 'resize', onWindowResize, false );     
+
+        window.addEventListener( 'resize', onWindowResize, false );
     }
-    
+
     function onImageLoaded(e){
         if (e.id > lastLoaded && config.progressShowImages){ // to not have a back and forward hickup… but some images will be skipped
             showImage(e.id);
             lastLoaded = e.id;
         }
     }
-    
+
     function onPreloadComplete(e){
         setPlayMode(config.playMode);
         play();
     }
-    
+
     function setPlayMode(mode){
         stop();
         config.playMode = mode;
     }
-    
+
     function play(){
         stop();
         if (config.playMode === 'mouse'){
@@ -87,7 +87,7 @@ var Sequencer = (function () {
         } else if (config.playMode === 'loop' || config.playMode === 'pong') {
             playInterval = setInterval(nextImage, config.playInterval);
         }
-    }   
+    }
 
     function stop(){
         document.removeEventListener('mousemove', onMouseMove);
@@ -96,7 +96,7 @@ var Sequencer = (function () {
             playInterval = null;
         }
     }
-            
+
     function nextImage(mode){
         if (!mode) mode = config.playMode;
         if(mode === 'pong') {
@@ -114,7 +114,7 @@ var Sequencer = (function () {
         }
     }
 
-    
+
     function onMouseMove(e){
         var t = images.length;
         var m, w;
@@ -139,35 +139,34 @@ var Sequencer = (function () {
         }
     }
 
-
-    //
     function onWindowResize(){
         canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;   
-        showImage(current); 
+        canvas.width = window.innerWidth;
+        showImage(current);
     }
-    
+
     function configureBody(){
         canvas = document.createElement('canvas');
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
+        canvas.style.display = "block";
         context = canvas.getContext('2d');
         document.body.appendChild(canvas);
-                
+
         document.body.style.margin ="0";
         document.body.style.padding ="0";
-        document.body.style.height = "100%";    
+        document.body.style.height = "100%";
         document.body.style.backgroundColor = config.bgColor;
         document.body.style.overflow = "hidden"; //canvas is a few pixels taller than innerHeight… (?)
     }
-    
+
     function showImage(id){
         if (id >= 0 && id < images.length){
             var img = images[id];
             var ca = canvas.width / canvas.height;
             var ia = img.width / img.height;
             var iw, ih;
-            
+
             if (config.scaleMode == "cover") {
                 if (ca > ia) {
                     iw = canvas.width;
@@ -188,18 +187,18 @@ var Sequencer = (function () {
                 iw = img.width;
                 ih = img.height;
             }
-                
+
             var ox = canvas.width/2 - iw/2;
-            var oy = canvas.height/2 - ih/2;            
+            var oy = canvas.height/2 - ih/2;
             context.drawImage(img, 0, 0, img.width, img.height, Math.round(ox), Math.round(oy), Math.round(iw), Math.round(ih));
         }
     }
-    
+
     return {
-        init : init, 
-        nextImage : nextImage, 
-        setPlayMode : setPlayMode, 
-        play : play, 
+        init : init,
+        nextImage : nextImage,
+        setPlayMode : setPlayMode,
+        play : play,
         stop : stop
     };
 })();
@@ -208,50 +207,50 @@ var Preloader = (function(){
     var progress;
     var queue;
     var images;
-    var loaded = 0; 
+    var loaded = 0;
     var onImageLoadedCallback, onPreloadCompleteCallback; //needs a better way. Override?
-    
-        
+
+
     function init(config, arrayToPopulate, onImageLoaded, onPreloadComplete){
 
         images = arrayToPopulate; //the array that will be populated with the loaded images
         onImageLoadedCallback = onImageLoaded; //event functions… crappy way.
         onPreloadCompleteCallback = onPreloadComplete;
-            
+
         var tot = Math.floor((config.to - config.from + 1) / config.step);
         queue = new Array(tot);
         //images = new Array(tot);
-        
-        buildProgress(config);  
-        
+
+        buildProgress(config);
+
         for (var i=0; i<tot; i++){
             var num = config.from + i * config.step;
             if (config.leadingZeroes > 0) num = (1e15+num+"").slice(-config.leadingZeroes);
             var src = config.folder + "/" + config.baseName + num + "." + config.ext;
             queue[i] = {src : src, id : i}; //two distinct arrays just to keep a "clean" image list instead of a custom loaderObject list, maybe this approach is overcomplicated
-            images[i] = new Image(); 
+            images[i] = new Image();
         }
-        
+
         setTimeout(function(){ //give it a bit of breath… safari needs to need that.
             var num = Math.max(1, config.simultaneousLoads);
             for (var i=0; i<num; i++){
                 loadNext();
             };
-        }, 300); 
+        }, 300);
     }
 
 
-    
+
     function onPreloadComplete(e){
         //console.log(e.length + " images loaded.");
         if (typeof onPreloadCompleteCallback === 'function') onPreloadCompleteCallback(e); //needs absolutely a better way
     }
-    
+
     function onImageLoaded(e){
         //console.log("loaded image [" + e.id + "]");
         if (typeof onImageLoadedCallback === 'function') onImageLoadedCallback(e); //needs absolutely a better way
     }
-        
+
     function loadNext(){
         if (queue.length > 0){
             var o = queue.shift();
@@ -267,11 +266,11 @@ var Preloader = (function(){
                     onPreloadComplete({images:images, length:images.length});
                 } else {
                     loadNext();
-                }               
+                }
             }
         }
     }
-    
+
     function buildProgress(config){
         if (config.progressMode == "circle"){
             progress = document.createElement('div');
@@ -315,31 +314,16 @@ var Preloader = (function(){
             document.body.appendChild(progress);
         }
     }
-    
+
     function removeProgress(){
         if (progress) {
             document.body.removeChild(progress);
             progress = null;
         }
     }
-    
 
-    // Array fix...
-    if (!Array.prototype.indexOf){
-        Array.prototype.indexOf = function(elt){
-            var len = this.length;
-            var from = Number(arguments[1]) || 0;
-            from = (from < 0) ? Math.ceil(from) : Math.floor(from);
-            if (from < 0) from += len;
-            for (; from < len; from++){
-                if (from in this && this[from] === elt) return from;
-            }
-            return -1;
-        };
-    }
-        
     return {
-        init : init, 
+        init : init,
         images : images
     };
 })();
