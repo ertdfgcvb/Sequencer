@@ -1,5 +1,4 @@
 Sequencer - A fast(?) fullscreen image-sequence player.
-Version 2.0
 
 
 
@@ -45,9 +44,22 @@ How to use:
                                         // may be jumpy because of async laoding
         dragAmount       : 10,          // distance (in pixels) to trigger nextImage(), can be < 1 but must be > 0
         retina           : true,        // use HDPI if present
-        imageLoad        : function     // callback for each image loaded
-        queueComplete    : function     // callback for queue completed
+        imageLoad        : function     // callback for each image load
+        queueComplete    : function     // callback for queue complete
     };
+
+
+
+-----------------------------------------------------------------------------------------
+Changelog:
+
+      2.0
+    - multiple instances
+    - better parser (automatic leading zeroes detection)
+    - canvas only (2d)
+    - incremental drag
+    - removed default loader (a custom one can be implemented via callback)
+    - cover frame
 
 
 
@@ -55,13 +67,14 @@ How to use:
 Todo:
     - accept an image array as parameter
     - accept a spritesheet as parameter
+    - WebGL support
 
 
 
 -----------------------------------------------------------------------------------------
 Author:
     Andreas Gysin
-    @andreasgysin
+    @andreasgysin (twitter)
 
 Project page:
     http://ertdfgcvb.com/sequencer
@@ -70,10 +83,11 @@ Project page:
 
 
 -----------------------------------------------------------------------------------------
-The source code of this project is licensed
-under the Apache Software License 2.0.
+License:
+    The source code of this project is licensed
+    under the Apache Software License 2.0.
 
-All non-code assets are published
-under the Creative Commons Attribution-NonCommercial license.
+    All non-code assets are published under
+    the Creative Commons Attribution-NonCommercial license.
 
-(c) 2012-16 Andreas Gysin
+    (c) 2012-16 Andreas Gysin
