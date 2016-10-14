@@ -30,19 +30,21 @@ How to use:
         scaleMode        : 'cover',     // can be: auto, cover, contain as in CSS3,
         direction        : 'x',         // can be: x, -x, y, -y
                                         // and determines the pointer direction,
-                                        // applies only if playMode is 'drag' or 'hover'
+                                        // applies only if playMode is drag or hover
         playMode         : 'drag',      // can be: none, drag, hover, auto
         loop             : 'loop',      // can be: loop, pong, none
         interval         : 10,          // interval in milliseconds between each frame,
-                                        // applies only if playMode is 'auto'
-        autoLoad         : 'all',       // can be: all, first, none
+                                        // applies only if playMode is auto,
+                                        // if set to zero tries to update at every frame event
+        autoLoad         : 'all',       // can be: all, first, none,
                                         // if first or none is used the loading
-                                        // needs to be triggered manually.
-        fitFirstImage    : false,       // resizes the canvas to the size of the first
-                                        // loaded image in the sequence
+                                        // needs to be triggered manually with load().
+        fitFirstImage    : false,       // resizes the canvas to the size of
+                                        // the first loaded image in the sequence
         showLoadedImages : false,       // shows images while loading the sequence,
                                         // may be jumpy because of async laoding
-        dragAmount       : 10,          // distance (in pixels) to trigger nextImage(), can be < 1 but must be > 0
+        dragAmount       : 10,          // distance (in pixels) to trigger nextImage(),
+                                        // can be < 1, but must be > 0
         retina           : true,        // use HDPI if present
         imageLoad        : function     // callback for each image load
         queueComplete    : function     // callback for queue complete
@@ -68,6 +70,7 @@ Todo:
     - accept an image array as parameter
     - accept a spritesheet as parameter
     - WebGL support
+    - better touch support
 
 
 
