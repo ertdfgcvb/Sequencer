@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Sequencer test</title>
+	<style type="text/css">
+		body{
+			padding: 3em;
+		}
+		canvas {
+			display: block;
+		}
+		td {
+			vertical-align:top;
+			text-align:left;
+			border-top: 1px solid rgba(0,0,0,0.2);
+			margin:0;
+			padding: 1em 0 1em 0;
+		}
+		table{
+			border-collapse: collapse;
+		}
+		pre{
+			margin:0 1em 0 0;
+		}
+		button{
+			min-height:2.5em;
+			border:none;
+			border-radius: 2.5em;
+			cursor:pointer;
+			padding: 0 1.5em;
+			background-color: rgb(240,50,50);
+			color:rgb(255,255,255);
+		}
+
+	</style>
+	<script type="text/javascript" src="../sequencer/sequencer.js"></script>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+
+
+	var configs = [];
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'hover',
+		direction        : '-x',
+	});
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'hover',
+		direction        : 'y',
+	});
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'drag',
+		direction        : '-x',
+	});
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'drag',
+		direction        : '-x',
+		dragAmount       : 2
+	});
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'auto',
+		loop             : 'pong',
+	});
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'auto',
+		interval         : 50
+	});
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'auto',
+		step             : 10,
+		interval         : 300
+	});
+
+
+	configs.push({
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		playMode         : 'none',
+	});
+
+	configs.push({
+		from             : 'http://ertdfgcvb.ch/p2/sm/pics/protog/3/DSC04853.JPG',
+		to               : 'http://ertdfgcvb.ch/p2/sm/pics/protog/3/DSC04927.JPG',
+		playMode         : 'hover',
+		showLoadedImages : true,
+		autoLoad         : 'first',
+		direction        : '-x'
+	});
+
+	configs.push({
+		from             : 'http://ertdfgcvb.ch/p2/sm/pics/protog/2/DSC04777.JPG',
+		to               : 'http://ertdfgcvb.ch/p2/sm/pics/protog/2/DSC04851.JPG',
+		playMode         : 'hover',
+		showLoadedImages : true,
+		autoLoad         : 'none',
+		fitFirstImage    : true,
+	});
+
+	var t = document.createElement('table');
+
+	configs.forEach(function(cfg, i){
+		var tr  = document.createElement('tr');
+		var td1 = document.createElement('td');
+		var td2 = document.createElement('td');
+		var pre = document.createElement('pre');
+
+		if (cfg.autoLoad !== undefined) {
+			var btn = document.createElement('button');
+			btn.type = "button";
+			btn.innerHTML = "load()";
+			td1.appendChild(btn);
+			btn.onclick = function(){
+				s.load();
+			};
+
+			cfg.imageLoad = function(e){
+				pre.innerHTML += "id:" + e.id + " count:"+ e.count + " total:" + e.total + " img.src:" + e.img.src.split('/').pop() + "\n";
+			};
+
+			cfg.queueComplete = function(e){
+				pre.innerHTML += "Queue complete!\n";
+			};
+		}
+
+		if (cfg.playMode == 'none') {
+			var btn = document.createElement('button');
+			btn.type = "button";
+			btn.innerHTML = "nextImage()";
+			td1.appendChild(btn);
+			btn.onclick = function(){
+				s.nextImage();
+			};
+		}
+
+		pre.innerHTML = '<pre>' + JSON.stringify(cfg, null, 2) + '<pre>';
+
+		cfg.canvas = document.createElement('canvas');
+		cfg.canvas.width  = 200;
+		cfg.canvas.height = 150;
+		td1.appendChild(pre);
+		td2.appendChild(cfg.canvas);
+		tr.appendChild(td1);
+		tr.appendChild(td2);
+		t.appendChild(tr);
+
+		var s = Sequencer.make(cfg);
+
+	});
+
+	document.body.appendChild(t);
+
+</script>
+</html>

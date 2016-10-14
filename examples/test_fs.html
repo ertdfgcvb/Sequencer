@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Sequencer test</title>
+	<style type="text/css">
+		body   { margin:0; padding:0; }
+		canvas {
+			background-color: rgb(0,0,0);
+			display: block;
+		}
+	</style>
+	<script type="text/javascript" src="../sequencer/sequencer.js"></script>
+</head>
+<body>
+	<canvas></canvas>
+</body>
+<script type="text/javascript">
+	var s = Sequencer.make({
+		canvas           : document.querySelector("canvas"),
+		from             : 'pics/pig/DSC04701.JPG',
+		to               : 'pics/pig/DSC04775.JPG',
+		// direction        : "-x",
+		playMode         : "drag",
+		scaleMode        : "cover",
+		fitFirstImage    : false,
+		showLoadedImages : false,
+		retina           : true,
+		imageLoad        : function(e){
+			//console.log("[id: " + e.id + "] " + e.count + "/" + e.total);
+		},
+		queueComplete    : function(e){
+			//console.log(e);
+		}
+	});
+
+	s.size(window.innerWidth, window.innerHeight);
+
+	window.addEventListener('resize', function(){
+		s.size(window.innerWidth, window.innerHeight);
+	});
+</script>
+</html>
