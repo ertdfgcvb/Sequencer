@@ -27,7 +27,7 @@ How to use:
         to               : '10.jpg',    // last file of the sequence
         step             : 1,           // increment: to load only even images use 2, etc.
         scaleMode        : 'cover',     // can be: auto, cover, contain as in CSS3,
-        direction        : 'x',         // can be: x, -x, y', -y
+        direction        : 'x',         // can be: x, -x, y, -y
                                         // and determines the pointer direction,
                                         // applies only if playMode is 'drag' or 'hover'
         playMode         : 'drag',      // can be: none, drag, hover, auto
@@ -56,7 +56,7 @@ Project page:
     http://ertdfgcvb.com/sequencer
     http://github.com/ertdfgcvb/Sequencer
 
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 The source code of this project is licensed
 under the Apache Software License 2.0.
 
