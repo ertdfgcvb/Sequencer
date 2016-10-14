@@ -1,8 +1,8 @@
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 Sequencer - A fast(?) fullscreen image-sequence player.
 Version 2.0
 
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 How to use:
 
     The minimum paramters are two filenames of an image sequence.
@@ -13,7 +13,7 @@ How to use:
         to   : 'pics/pig/DSC04775.JPG',
     });
 
-    ...or just a plain numerical squencece:
+    ...or just a plain numerical sequence:
 
     var s2 = Sequencer.create({
         from : 'pics/dog/1.png',
@@ -23,28 +23,31 @@ How to use:
     All options:
 
     var settings = {
-        from             : '1.jpg',    // first file of the sequence
-        to               : '10.jpg',   // last file of the sequence
-        step             : 1,          // increment: to load only even images use 2, etc.
-        scaleMode        : 'cover',    // can be: auto, cover, contain as in CSS3,
-        direction        : 'x',        // can be: x, -x, y', -y and determines the pointer direction,
-                                       // applies only if playMode is 'drag' or 'hover'
-        playMode         : 'drag',     // can be: none, drag, hover, auto
-        loop             : 'loop',     // can be: loop, pong, none
-        interval         : 10,         // interval in milliseconds between each frame,
-                                       // applies only if playMode is 'auto', minimun is around 16
-        autoLoad         : 'all',      // can be: all, first, none
-                                       // if first or none is used the loading needs to be triggered manually.
-        fitFirstImage    : false,      // resizes the canvas to the size of the first loaded image in the sequence
-        showLoadedImages : false,      // shows images while loading the sequence,
-                                       // may be jumpy because of async laoding
-        dragAmount       : 10,         // amount of drag per pixel
-        retina           : true,       // use HDPI if present
-        imageLoad        : function(e) // callback for each image loaded
-        queueComplete    : function(e) // callback for queue completed
+        from             : '1.jpg',     // first file of the sequence
+        to               : '10.jpg',    // last file of the sequence
+        step             : 1,           // increment: to load only even images use 2, etc.
+        scaleMode        : 'cover',     // can be: auto, cover, contain as in CSS3,
+        direction        : 'x',         // can be: x, -x, y', -y
+                                        // and determines the pointer direction,
+                                        // applies only if playMode is 'drag' or 'hover'
+        playMode         : 'drag',      // can be: none, drag, hover, auto
+        loop             : 'loop',      // can be: loop, pong, none
+        interval         : 10,          // interval in milliseconds between each frame,
+                                        // applies only if playMode is 'auto'
+        autoLoad         : 'all',       // can be: all, first, none
+                                        // if first or none is used the loading
+                                        // needs to be triggered manually.
+        fitFirstImage    : false,       // resizes the canvas to the size of the first
+                                        // loaded image in the sequence
+        showLoadedImages : false,       // shows images while loading the sequence,
+                                        // may be jumpy because of async laoding
+        dragAmount       : 10,          // amount of drag per pixel
+        retina           : true,        // use HDPI if present
+        imageLoad        : function(e)  // callback for each image loaded
+        queueComplete    : function(e)  // callback for queue completed
     };
 
--------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
 Author:
     Andreas Gysin
     @andreasgysin
