@@ -50,10 +50,12 @@ How to use:
     };
 
 
+
 -----------------------------------------------------------------------------------------
 Todo:
     - accept an image array as parameter
     - accept a spritesheet as parameter
+
 
 
 -----------------------------------------------------------------------------------------
@@ -64,6 +66,7 @@ Author:
 Project page:
     http://ertdfgcvb.com/sequencer
     http://github.com/ertdfgcvb/Sequencer
+
 
 
 -----------------------------------------------------------------------------------------
