@@ -24,6 +24,7 @@ How to use:
     All options:
 
     var opts = {
+        canvas           : null,        // a valid canvas element (will be created if null)
         from             : '1.jpg',     // first file of the sequence
         to               : '10.jpg',    // last file of the sequence
         step             : 1,           // increment: to load only even images use 2, etc.
