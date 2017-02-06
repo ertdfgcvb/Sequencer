@@ -9,14 +9,14 @@ How to use:
 
     The parser tries to figure out if there are leading zeroes:
 
-    var s1 = Sequencer.create({
+    var s1 = Sequencer.make({
         from : 'pics/pig/DSC04701.JPG',
         to   : 'pics/pig/DSC04775.JPG',
     });
 
     ...or just a plain numerical sequence:
 
-    var s2 = Sequencer.create({
+    var s2 = Sequencer.make({
         from : 'pics/dog/1.png',
         to   : 'pics/dog/100.png',
     });

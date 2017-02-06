@@ -11,7 +11,7 @@
 //      http://ertdfgcvb.com/sequencer
 //      http://github.com/ertdfgcvb/Sequencer
 
-var Sequencer = (function (global) {
+var Sequencer = (function (global, document) {
 
     'use strict';
 
@@ -26,6 +26,7 @@ var Sequencer = (function (global) {
     function S(cfg){
         // configuration defaults:
         this.config = {
+            canvas           : null,
             from             : '',
             to               : '',
             step             : 1,            // increment: to load only even images use 2, etc
@@ -46,6 +47,14 @@ var Sequencer = (function (global) {
         if (this.config.from == '' && this.config.to == '') {
             console.error("Missing filenames.")
             return false;
+        }
+
+        // create a default canvas in case none is added:
+        if (!this.config.canvas) {
+            var c = document.createElement('canvas');
+            document.body.appendChild(c);
+            this.config.canvas = c;
+            this.config.fitFirstImage = true;
         }
 
         this.pointer = {x:0, y:0, down:false};
@@ -369,7 +378,7 @@ var Sequencer = (function (global) {
         make      : make,
         instances : instances
     };
-})(window);
+})(window, document);
 
 
 
