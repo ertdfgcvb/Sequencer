@@ -17,6 +17,8 @@ var Sequencer = (function (global, document) {
 
     var instances = [];
 
+    var hasTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
+
     function make(cfg){
         var s = new S(cfg);
         if (s !== false) instances.push(s);
@@ -85,12 +87,17 @@ var Sequencer = (function (global, document) {
             new Preloader(this.images, this.fileList, imageLoad.bind(null, this), queueComplete.bind(null, this));
         },
         run : function(){
+
+            var _move = hasTouch ? 'touchmove'  : 'mousemove';
+            var _down = hasTouch ? 'touchstart' : 'mousedown';
+            var _up   = hasTouch ? 'touchend'   : 'mouseup';
+
             if (this.config.playMode === 'hover'){
-                this.ctx.canvas.addEventListener('mousemove', absoluteMove.bind(null, this));
+                this.ctx.canvas.addEventListener(_move, absoluteMove.bind(null, this));
             } else if (this.config.playMode === 'drag') {
-                this.ctx.canvas.addEventListener('mousemove', relativeMove.bind(null, this));
-                this.ctx.canvas.addEventListener('mousedown', pointerDown.bind(null, this));
-                document.addEventListener('mouseup', pointerUp.bind(null, this));
+                this.ctx.canvas.addEventListener(_move, relativeMove.bind(null, this));
+                this.ctx.canvas.addEventListener(_down, pointerDown.bind(null, this));
+                document.addEventListener(_up, pointerUp.bind(null, this));
             } else if (this.config.playMode === 'auto') {
                 var self = this;
                 var pt = 0;
@@ -217,9 +224,12 @@ var Sequencer = (function (global, document) {
     }
 
     function pointerDown(self, e){
+        var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
+        var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+
         self.pointer = {
-            x    : e.offsetX,
-            y    : e.offsetY,
+            x    : ox,
+            y    : oy,
             down : true,
             currentId : self.current // TODO: this is a hack and needs a better solution...
         };
@@ -235,10 +245,13 @@ var Sequencer = (function (global, document) {
         var t =  self.images.length;
         var dist = 0;
 
+        var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
+        var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+
         if (/x/.test(self.config.direction)) {
-            dist = (e.offsetX - self.pointer.x) * self.directionSign;
+            dist = (ox - self.pointer.x) * self.directionSign;
         } else if (/y/.test(self.config.direction)) {
-            dist = (e.offsetY - self.pointer.y) * self.directionSign;
+            dist = (oy - self.pointer.y) * self.directionSign;
         }
         //var id = constrain(self.pointer.currentId + Math.floor(dist / self.config.dragAmount), 0, t);
         var id = self.pointer.currentId + Math.floor(dist / self.config.dragAmount);
@@ -252,21 +265,26 @@ var Sequencer = (function (global, document) {
     }
 
     function absoluteMove(self, e){
+
         var t = self.images.length;
         var m, w;
         var r = self.config.retina ? global.devicePixelRatio : 1;
+
+        var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
+        var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+
         if (self.config.direction == 'x') {
             w = self.ctx.canvas.width / r;
-            m = e.offsetX;
+            m = ox;
         } else if (self.config.direction == '-x') {
             w = self.ctx.canvas.width / r;
-            m = w - e.offsetX - 1;
+            m = w - ox - 1;
         } else if (self.config.direction == 'y') {
             w = self.ctx.canvas.height / r;
-            m = e.offsetY;
+            m = oy;
         } else if (self.config.direction == '-y') {
             w = self.ctx.canvas.height / r;
-            m = w - e.offsetY - 1;
+            m = w - oy - 1;
         }
         var id = constrain(Math.floor(m / w * t), 0, t - 1);
         if (id != self.current){
