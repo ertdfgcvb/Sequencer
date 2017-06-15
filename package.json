@@ -1,0 +1,27 @@
+{
+  "name": "image-sequencer",
+  "version": "2.0.1",
+  "description": "Sequencer - A fast(?) fullscreen image-sequence player",
+  "main": "sequencer/sequencer.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ertdfgcvb/Sequencer.git"
+  },
+  "keywords": [
+    "image",
+    "sequence",
+    "sequencer"
+  ],
+  "author": "Andreas Gysin",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/ertdfgcvb/Sequencer/issues"
+  },
+  "homepage": "https://github.com/ertdfgcvb/Sequencer#readme"
+}
