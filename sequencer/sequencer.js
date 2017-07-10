@@ -11,8 +11,22 @@
 //      http://ertdfgcvb.com/sequencer
 //      http://github.com/ertdfgcvb/Sequencer
 
-var Sequencer = (function (global, document) {
-
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], function() {
+          return factory(window, document);
+        });
+    } else if (typeof module === 'object' && module.exports) {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory(window, document);
+    } else {
+        // Browser globals (root is window)
+        root.Sequencer = factory(root, document);
+  }
+}(this, function (window, document) {
     'use strict';
 
     var instances = [];
@@ -167,7 +181,7 @@ var Sequencer = (function (global, document) {
         },
 
         size : function(w, h){
-            var r = this.config.retina ? global.devicePixelRatio : 1;
+            var r = this.config.retina ? window.devicePixelRatio : 1;
             var c = this.ctx.canvas;
             c.width = w * r;
             c.height = h * r;
@@ -268,7 +282,7 @@ var Sequencer = (function (global, document) {
 
         var t = self.images.length;
         var m, w;
-        var r = self.config.retina ? global.devicePixelRatio : 1;
+        var r = self.config.retina ? window.devicePixelRatio : 1;
 
         var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
         var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
@@ -396,7 +410,4 @@ var Sequencer = (function (global, document) {
         make      : make,
         instances : instances
     };
-})(window, document);
-
-
-
+}));
