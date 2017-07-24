@@ -177,7 +177,7 @@
 
             var ox = cw/2 - iw/2;
             var oy = ch/2 - ih/2;
-            this.ctx.clearRect(cw, ch);  // support for images with alpha
+            this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
             this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~ox, ~~oy, ~~iw, ~~ih);
         },
 
