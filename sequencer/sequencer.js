@@ -1,5 +1,5 @@
 // Sequencer - A fast(?) fullscreen image-sequence player.
-// (c) 2012-16
+// (c) 2012-17
 // See README.txt or visit github (link below) for details
 //
 // Author:
@@ -177,6 +177,7 @@
 
             var ox = cw/2 - iw/2;
             var oy = ch/2 - ih/2;
+            this.ctx.clearRect(cw, ch);  // support for images with alpha
             this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~ox, ~~oy, ~~iw, ~~ih);
         },
 
