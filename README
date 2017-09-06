@@ -1,8 +1,8 @@
-Sequencer - A fast(?) fullscreen image-sequence player.
+Sequencer
+A fast(?) fullscreen image-sequence player
 
 
-
------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 How to use:
 
     The minimum paramters are two filenames of an image sequence.
@@ -52,8 +52,7 @@ How to use:
     };
 
 
-
------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Changelog:
 
       2.0
@@ -65,8 +64,7 @@ Changelog:
     - cover frame
 
 
-
------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Todo:
     - accept an image array as parameter
     - accept a spritesheet as parameter
@@ -74,8 +72,7 @@ Todo:
     - better touch support
 
 
-
------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Author:
     Andreas Gysin
     @andreasgysin (twitter)
@@ -83,15 +80,3 @@ Author:
 Project page:
     http://ertdfgcvb.com/sequencer
     http://github.com/ertdfgcvb/Sequencer
-
-
-
------------------------------------------------------------------------------------------
-License:
-    The source code of this project is licensed
-    under the Apache Software License 2.0.
-
-    All non-code assets are published under
-    the Creative Commons Attribution-NonCommercial license.
-
-    (c) 2012-16 Andreas Gysin
