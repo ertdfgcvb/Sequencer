@@ -1,4 +1,4 @@
-/* jshint esversion: 6 */
+// jshint esversion: 6
 
 const hasTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
 

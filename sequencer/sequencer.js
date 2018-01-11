@@ -300,6 +300,7 @@ function absoluteMove(self, e){
 // by extracting the base name, the number, the extension, etc.
 // returns an object with the necessary fields
 // TODO: could be more efficient...
+// TODO: break out in own module
 
 function parseSequence(from, to){
     const l = Math.min(from.length, to.length);
@@ -337,8 +338,7 @@ function buildFileList(sequenceObj, step = 1){
     return q;
 }
 
-// -- Preloader ---------------------------------------------------------------------
-
+// TODO: break out in own module
 function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCallbak){
     const concurrentLoads = Math.min(fileList.length, 4);
     let current = arrayToPopulate.length - 1; // id: order in array

@@ -51,9 +51,13 @@ How to use:
         queueComplete    : function     // callback for queue complete
     };
 
-
 --------------------------------------------------------------------------------
 Changelog:
+
+      2.1
+    - update to ECMAScript 2015 (aka ES6)
+    - script is now an ES6 module (may need transpiling for legacy support)
+      and loaded as such in the examples
 
       2.0
     - multiple instances
