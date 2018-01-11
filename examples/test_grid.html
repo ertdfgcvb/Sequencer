@@ -1,40 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Sequencer test</title>
-	<style type="text/css">
-		body   { margin:0; padding:0; }
-		canvas { display: block; float:left; margin: 1em;}
-	</style>
-	<script type="text/javascript" src="../sequencer/sequencer.js"></script>
-</head>
-<body>
-</body>
-<script type="text/javascript">
-for (var i=0; i<30; i++){
-	var c = document.createElement('canvas');
-	c.width  = 200;
-	c.height = 150;
-	document.body.appendChild(c);
-	var s = Sequencer.make({
-		canvas           : c,
-		from             : 'pics/pig/DSC04701.JPG',
-		to               : 'pics/pig/DSC04775.JPG',
-		direction        : "-x",
-		playMode         : "auto",
-		scaleMode        : "cover",
-		loop             : i % 2 === 0 ? "pong" : "loop",
-		fitFirstImage    : false,
-		showLoadedImages : false,
-		retina           : true,
-		imageLoad        : function(e){
-			//console.log("[id: " + e.id + "] " + e.count + "/" + e.total);
-		},
-		queueComplete    : function(e){
-			//console.log(e);
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Sequencer test</title>
+		<style type="text/css">
+			body   { margin:0; padding:0; }
+			canvas { display: block; float:left; margin: 1em;}
+		</style>
+	</head>
+	<body></body>
+	<script type="module">
+		for (let i=0; i<30; i++){
+			const c = document.createElement('canvas');
+			c.width  = 200;
+			c.height = 150;
+			document.body.appendChild(c);
+			const s = Sequencer.make({
+				canvas           : c,
+				from             : 'pics/pig/DSC04701.JPG',
+				to               : 'pics/pig/DSC04775.JPG',
+				direction        : "-x",
+				playMode         : "auto",
+				scaleMode        : "cover",
+				loop             : i % 2 === 0 ? "pong" : "loop",
+				fitFirstImage    : false,
+				showLoadedImages : false,
+				retina           : true,
+				imageLoad        : function(e){
+					//console.log("[id: " + e.id + "] " + e.count + "/" + e.total);
+				},
+				queueComplete    : function(e){
+					//console.log(e);
+				}
+			});
 		}
-	});
-}
-</script>
+	</script>
 </html>
