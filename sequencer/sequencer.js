@@ -29,7 +29,6 @@ class S{
 
     constructor(opts){
 
-        // configuration defaults:
         const defaults = {
             canvas           : null,
             from             : '',
