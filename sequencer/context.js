@@ -2,8 +2,6 @@
 
 const hasTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
 
-// -- public interface -------------------------------------------------------------------
-
 export default {
 
     hasTouch

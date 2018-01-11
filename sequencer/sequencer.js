@@ -12,10 +12,10 @@
  *      http://github.com/ertdfgcvb/Sequencer
  */
 
-
 // jshint esversion: 6
 
 import context from "./context.js";
+import util from "./util.js";
 
 const instances = [];
 
@@ -25,73 +25,75 @@ function make(cfg){
     return s;
 }
 
-function S(opts){
+class S{
 
-    // configuration defaults:
-    const defaults = {
-        canvas           : null,
-        from             : '',
-        to               : '',
-        step             : 1,            // increment: to load only even images use 2, etc
-        scaleMode        : 'cover',      // as in CSS3, can be: auto, cover, contain
-        direction        : 'x',          // mouse direction, can be x, -x, y, -y, applies only if playMode is 'drag' or 'hover'
-        playMode         : 'drag',       // none, drag, hover, auto
-        loop             : 'loop',       // loop, pong or none
-        interval         : 0,            // interval in milliseconds between each frame, applies only if playMode is 'auto'
-        autoLoad         : 'all',        // all, first, none: triggers the loading of the queue immediatly, can be disabled to be triggered in a different moment
-        fitFirstImage    : false,        // resizes the canvas to the size of the first loaded image in the sequence
-        showLoadedImages : false,        // don't display images while loading
-        dragAmount       : 10,
-        retina           : true,
-    };
+    constructor(opts){
 
-    this.config = Object.assign({}, defaults, opts);
+        // configuration defaults:
+        const defaults = {
+            canvas           : null,
+            from             : '',
+            to               : '',
+            step             : 1,            // increment: to load only even images use 2, etc
+            scaleMode        : 'cover',      // as in CSS3, can be: auto, cover, contain
+            direction        : 'x',          // mouse direction, can be x, -x, y, -y, applies only if playMode is 'drag' or 'hover'
+            playMode         : 'drag',       // none, drag, hover, auto
+            loop             : 'loop',       // loop, pong or none
+            interval         : 0,            // interval in milliseconds between each frame, applies only if playMode is 'auto'
+            autoLoad         : 'all',        // all, first, none: triggers the loading of the queue immediatly, can be disabled to be triggered in a different moment
+            fitFirstImage    : false,        // resizes the canvas to the size of the first loaded image in the sequence
+            showLoadedImages : false,        // don't display images while loading
+            dragAmount       : 10,
+            retina           : true,
+        };
 
-    if (this.config.from == '' && this.config.to == '') {
-        console.error("Missing filenames.");
-        return false;
+        this.config = Object.assign({}, defaults, opts);
+
+        if (this.config.from == '' && this.config.to == '') {
+            console.error("Missing filenames.");
+            return false;
+        }
+
+        // create a default canvas in case none is added:
+        if (!this.config.canvas) {
+            const c = document.createElement('canvas');
+            document.body.appendChild(c);
+            this.config.canvas = c;
+            this.config.fitFirstImage = true;
+        }
+
+        this.pointer = {x:0, y:0, down:false};
+        this.current = -1;
+        this.images = [];
+        this.directionSign = /-/.test(this.config.direction) ? -1 : 1;
+        this.lastLoaded = -1;
+        this.pongSign = 1;
+        this.ctx = this.config.canvas.getContext('2d');
+
+        const s = parseSequence(this.config.from, this.config.to);
+        this.fileList = buildFileList(s, this.config.step);
+
+        this.size(this.ctx.canvas.width, this.ctx.canvas.height);
+
+        if (this.config.autoLoad == 'first') {
+            new Preloader(this.images, [this.fileList.shift()], imageLoad.bind(null, this));
+        } else if (this.config.autoLoad == 'all') {
+            this.load();
+        }
     }
 
-    // create a default canvas in case none is added:
-    if (!this.config.canvas) {
-        var c = document.createElement('canvas');
-        document.body.appendChild(c);
-        this.config.canvas = c;
-        this.config.fitFirstImage = true;
-    }
-
-    this.pointer = {x:0, y:0, down:false};
-    this.current = -1;
-    this.images = [];
-    this.directionSign = /-/.test(this.config.direction) ? -1 : 1;
-    this.lastLoaded = -1;
-    this.pongSign = 1;
-    this.ctx = this.config.canvas.getContext('2d');
-
-    var s = parseSequence(this.config.from, this.config.to);
-    this.fileList = buildFileList(s, this.config.step);
-
-    this.size(this.ctx.canvas.width, this.ctx.canvas.height);
-
-    if (this.config.autoLoad == 'first') {
-        new Preloader(this.images, [this.fileList.shift()], imageLoad.bind(null, this));
-    } else if (this.config.autoLoad == 'all') {
-        this.load();
-    }
-}
-
-S.prototype = {
-    load : function(){
+    load(){
         this.load = function(){
             console.log("load() can be called only once.");
         };
         new Preloader(this.images, this.fileList, imageLoad.bind(null, this), queueComplete.bind(null, this));
-    },
-    run : function(){
+    }
 
-        var _move = context.hasTouch ? 'touchmove'  : 'mousemove';
-        var _down = context.hasTouch ? 'touchstart' : 'mousedown';
-        var _up   = context.hasTouch ? 'touchend'   : 'mouseup';
+    run(){
+
+        const _move = context.hasTouch ? 'touchmove'  : 'mousemove';
+        const _down = context.hasTouch ? 'touchstart' : 'mousedown';
+        const _up   = context.hasTouch ? 'touchend'   : 'mouseup';
 
         if (this.config.playMode === 'hover'){
             this.ctx.canvas.addEventListener(_move, absoluteMove.bind(null, this));
@@ -100,21 +102,20 @@ S.prototype = {
             this.ctx.canvas.addEventListener(_down, pointerDown.bind(null, this));
             document.addEventListener(_up, pointerUp.bind(null, this));
         } else if (this.config.playMode === 'auto') {
-            var self = this;
-            var pt = 0;
-            var loop = function(t){
-                var dt = t - pt;
-                if (dt >= self.config.interval) {
-                    self.nextImage();
-                    pt = Math.max(t, t - (dt - self.config.interval));
+            let pt = 0;
+            const loop = (t)=> {
+                const dt = t - pt;
+                if (dt >= this.config.interval) {
+                    this.nextImage();
+                    pt = Math.max(t, t - (dt - this.config.interval));
                 }
                 requestAnimationFrame(loop);
             };
             requestAnimationFrame(loop);
         }
-    },
+    }
 
-    nextImage : function(loop){
+    nextImage (loop){
         if (!loop) loop = this.config.loop;
         if(loop === 'pong') {
             this.current += this.pongSign;
@@ -129,17 +130,17 @@ S.prototype = {
         } else {
             this.drawImage(++this.current % this.images.length); //loop
         }
-    },
+    }
 
-    drawImage : function(id){
+    drawImage(id){
         if (id === undefined) id = this.current;
         if (id < 0 || id >= this.images.length) return;
-        var img = this.images[id];
-        var cw = this.ctx.canvas.width;
-        var ch = this.ctx.canvas.height;
-        var ca = cw / ch;
-        var ia = img.width / img.height;
-        var iw, ih;
+        const img = this.images[id];
+        const cw = this.ctx.canvas.width;
+        const ch = this.ctx.canvas.height;
+        const ca = cw / ch;
+        const ia = img.width / img.height;
+        let iw, ih;
 
         if (this.config.scaleMode == 'cover') {
             if (ca > ia) {
@@ -162,15 +163,15 @@ S.prototype = {
             ih = img.height;
         }
 
-        var ox = cw/2 - iw/2;
-        var oy = ch/2 - ih/2;
+        const ox = cw/2 - iw/2;
+        const oy = ch/2 - ih/2;
         this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
         this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~ox, ~~oy, ~~iw, ~~ih);
-    },
+    }
 
-    size : function(w, h){
-        var r = this.config.retina ? window.devicePixelRatio : 1;
-        var c = this.ctx.canvas;
+    size (w, h){
+        const r = this.config.retina ? window.devicePixelRatio : 1;
+        const c = this.ctx.canvas;
         c.width = w * r;
         c.height = h * r;
         c.style.width = w + 'px';
@@ -178,7 +179,7 @@ S.prototype = {
         //this.ctx.scale(r, r);
         this.drawImage();
     }
-};
+}
 
 // -- Callback functions for the sequencer object -----------------------------------
 
@@ -226,8 +227,8 @@ function queueComplete(self, e){
 }
 
 function pointerDown(self, e){
-    var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
-    var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+    const ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
+    const oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
 
     self.pointer = {
         x    : ox,
@@ -244,19 +245,18 @@ function pointerUp(self, e){
 function relativeMove(self, e){
     if (!self.pointer.down) return;
 
-    var t =  self.images.length;
-    var dist = 0;
+    const t = self.images.length;
+    const ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
+    const oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
 
-    var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
-    var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
-
+    let dist = 0;
     if (/x/.test(self.config.direction)) {
         dist = (ox - self.pointer.x) * self.directionSign;
     } else if (/y/.test(self.config.direction)) {
         dist = (oy - self.pointer.y) * self.directionSign;
     }
-    //var id = constrain(self.pointer.currentId + Math.floor(dist / self.config.dragAmount), 0, t);
-    var id = self.pointer.currentId + Math.floor(dist / self.config.dragAmount);
+
+    let id = self.pointer.currentId + Math.floor(dist / self.config.dragAmount);
     if (id < 0) id = t - (-id % t);
     else if (id > t) id = id % t;
 
@@ -268,12 +268,12 @@ function relativeMove(self, e){
 
 function absoluteMove(self, e){
 
-    var t = self.images.length;
-    var m, w;
-    var r = self.config.retina ? window.devicePixelRatio : 1;
+    const t = self.images.length;
+    const r = self.config.retina ? window.devicePixelRatio : 1;
+    const ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
+    const oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
 
-    var ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
-    var oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+    let m, w;
 
     if (self.config.direction == 'x') {
         w = self.ctx.canvas.width / r;
@@ -288,43 +288,28 @@ function absoluteMove(self, e){
         w = self.ctx.canvas.height / r;
         m = w - oy - 1;
     }
-    var id = constrain(Math.floor(m / w * t), 0, t - 1);
+    const id = util.constrain(Math.floor(m / w * t), 0, t - 1);
     if (id != self.current){
         self.drawImage(id);
         self.current = id;
     }
 }
 
-// -- Helpers -----------------------------------------------------------------------
-
-// costrain
-function constrain(v, a, b){
-    if (v < a) return a;
-    if (v > b) return b;
-    return v;
-}
-
-// pad left
-function padL(str, char, len) {
-    while(str.length < len) str = char + str;
-    return str;
-}
-
 // Parses sequences described like this
-// from: DSC00998.jpg
-// to:   DSC01112.jpg
+// from : DSC00998.jpg
+// to   : DSC01112.jpg
 // by extracting the base name, the number, the extension, etc.
 // returns an object with the necessary fields
 // TODO: could be more efficient...
 
 function parseSequence(from, to){
-    var l = Math.min(from.length, to.length);
-    var i = Math.max(0, from.lastIndexOf('/'));
+    const l = Math.min(from.length, to.length);
+    let i = Math.max(0, from.lastIndexOf('/'));
     while (from.charAt(i) == to.charAt(i) && !/[1-9]/.test(from.charAt(i)) && i < l) i++;
-    var a  = from.slice(i, from.lastIndexOf('.'));      // from, may contain leading zeros
-    var b  = to.slice(i, to.lastIndexOf('.'));          // to
-    var ia = parseInt(a);
-    var ib = parseInt(b);
+    const a  = from.slice(i, from.lastIndexOf('.'));      // from, may contain leading zeros
+    const b  = to.slice(i, to.lastIndexOf('.'));          // to
+    const ia = parseInt(a);
+    const ib = parseInt(b);
     return {
         from   : ia,
         to     : ib,
@@ -341,13 +326,12 @@ function parseSequence(from, to){
 
 // Builds a list of files from a 'sequence object' return from parseSequence()
 // NOTE: could be better... (is it even necessary?)
-function buildFileList(sequenceObj, step){
-    step = step || 1;
-    var q = [];
-    var dir = sequenceObj.from > sequenceObj.to ? -1 : 1;
-    for (var i=0; i<sequenceObj.length; i += step){
-        var num = (sequenceObj.from + i * dir).toString();
-        num = padL(num, '0', sequenceObj.zeroes);
+function buildFileList(sequenceObj, step = 1){
+    const q = [];
+    const dir = sequenceObj.from > sequenceObj.to ? -1 : 1;
+    for (let i=0; i<sequenceObj.length; i += step){
+        const n = (sequenceObj.from + i * dir).toString();
+        const num = util.padLeft(n, '0', sequenceObj.zeroes);
         //while (num.length < sequenceObj.zeroes) num = '0' + num;
         q.push(sequenceObj.base + num + sequenceObj.ext);
     }
@@ -357,17 +341,17 @@ function buildFileList(sequenceObj, step){
 // -- Preloader ---------------------------------------------------------------------
 
 function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCallbak){
-    var current = arrayToPopulate.length - 1; // id: order in array
-    var count = arrayToPopulate.length;       // count: count of image loaded... can be out of sync of id.
-    var concurrentLoads = Math.min(fileList.length, 4);
-    for (var i=0; i<concurrentLoads; i++) loadNext();
+    const concurrentLoads = Math.min(fileList.length, 4);
+    let current = arrayToPopulate.length - 1; // id: order in array
+    let count = arrayToPopulate.length;       // count: count of image loaded... can be out of sync of id.
+    for (let i=0; i<concurrentLoads; i++) loadNext();
 
     function loadNext(){
         if (current >= fileList.length -1) return;
         current++;
 
         //console.log('Loading ' + fileList[current] + '...');
-        var img = new Image();
+        const img = new Image();
         img.src = fileList[current];
         (function(id) {
             img.onload = function(e){
