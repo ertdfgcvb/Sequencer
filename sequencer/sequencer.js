@@ -19,7 +19,7 @@ import util from "./util.js";
 
 const instances = [];
 
-function make(cfg){
+function make(cfg) {
     const s = new S(cfg);
     if (s !== false) instances.push(s);
     return s;
@@ -27,8 +27,7 @@ function make(cfg){
 
 class S{
 
-    constructor(opts){
-
+    constructor(opts) {
         const defaults = {
             canvas           : null,
             from             : '',
@@ -81,20 +80,20 @@ class S{
         }
     }
 
-    load(){
-        this.load = function(){
+    load() {
+        this.load = function() {
             console.log("load() can be called only once.");
         };
+
         new Preloader(this.images, this.fileList, imageLoad.bind(null, this), queueComplete.bind(null, this));
     }
 
-    run(){
-
+    run() {
         const _move = context.hasTouch ? 'touchmove'  : 'mousemove';
         const _down = context.hasTouch ? 'touchstart' : 'mousedown';
         const _up   = context.hasTouch ? 'touchend'   : 'mouseup';
 
-        if (this.config.playMode === 'hover'){
+        if (this.config.playMode === 'hover') {
             this.ctx.canvas.addEventListener(_move, absoluteMove.bind(null, this));
         } else if (this.config.playMode === 'drag') {
             this.ctx.canvas.addEventListener(_move, relativeMove.bind(null, this));
@@ -114,14 +113,14 @@ class S{
         }
     }
 
-    nextImage (loop){
+    nextImage (loop) {
         if (!loop) loop = this.config.loop;
         if(loop === 'pong') {
             this.current += this.pongSign;
             if (this.current >= this.images.length-1) { //this.current could ev. change by other playmodes, so extra-checks are necessary
                 this.pongSign = -1;
                 this.current = this.images.length-1;
-            } else if (this.current <= 0){
+            } else if (this.current <= 0) {
                 this.pongSign = 1;
                 this.current = 0;
             }
@@ -131,7 +130,7 @@ class S{
         }
     }
 
-    drawImage(id){
+    drawImage (id) {
         if (id === undefined) id = this.current;
         if (id < 0 || id >= this.images.length) return;
         const img = this.images[id];
@@ -168,7 +167,7 @@ class S{
         this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~ox, ~~oy, ~~iw, ~~ih);
     }
 
-    size (w, h){
+    size (w, h) {
         const r = this.config.retina ? window.devicePixelRatio : 1;
         const c = this.ctx.canvas;
         c.width = w * r;
@@ -182,8 +181,8 @@ class S{
 
 // -- Callback functions for the sequencer object -----------------------------------
 
-function imageLoad(self, e){
-    if (e.id > self.lastLoaded && self.config.showLoadedImages){ // to not have a back and forward hickup… but some images will be skipped
+function imageLoad(self, e) {
+    if (e.id > self.lastLoaded && self.config.showLoadedImages) { // to not have a back and forward hickup… but some images will be skipped
         self.drawImage(e.id);
         self.lastLoaded = e.id;
     }
@@ -199,8 +198,8 @@ function imageLoad(self, e){
     }
 
     // The canvas size is determined and set from the first image loaded:
-    if (e.id === 0){
-        if(self.config.fitFirstImage){
+    if (e.id === 0) {
+        if(self.config.fitFirstImage) {
             self.size(e.img.width, e.img.height);
             self.config.fitFirstImage = false;
         }
@@ -209,7 +208,7 @@ function imageLoad(self, e){
     }
 }
 
-function queueComplete(self, e){
+function queueComplete(self, e) {
     if (typeof self.config.queueComplete === 'function' ) {
         e.sequencer = self;
         self.config.queueComplete(e);
@@ -225,9 +224,15 @@ function queueComplete(self, e){
     }
 }
 
-function pointerDown(self, e){
-    const ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
-    const oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+function pointerDown(self, e) {
+    let ox, oy;
+    if (e.touches) {
+        ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+        oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
+    } else {
+        ox = e.offsetX;
+        oy = e.offsetY;
+    }
 
     self.pointer = {
         x    : ox,
@@ -237,16 +242,23 @@ function pointerDown(self, e){
     };
 }
 
-function pointerUp(self, e){
+function pointerUp(self, e) {
     self.pointer.down = false;
 }
 
-function relativeMove(self, e){
+function relativeMove(self, e) {
     if (!self.pointer.down) return;
 
     const t = self.images.length;
-    const ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
-    const oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+
+    let ox, oy;
+    if (e.touches) {
+        ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+        oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
+    } else {
+        ox = e.offsetX;
+        oy = e.offsetY;
+    }
 
     let dist = 0;
     if (/x/.test(self.config.direction)) {
@@ -259,21 +271,27 @@ function relativeMove(self, e){
     if (id < 0) id = t - (-id % t);
     else if (id > t) id = id % t;
 
-    if (id != self.current){
+    if (id != self.current) {
         self.drawImage(id);
         self.current = id;
     }
 }
 
-function absoluteMove(self, e){
+function absoluteMove(self, e) {
 
     const t = self.images.length;
     const r = self.config.retina ? window.devicePixelRatio : 1;
-    const ox = e.offsetX || e.touches[0].pageX - e.touches[0].target.offsetLeft;
-    const oy = e.offsetY || e.touches[0].pageY - e.touches[0].target.offsetTop;
+
+    let ox, oy;
+    if (e.touches) {
+        ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+        oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
+    } else {
+        ox = e.offsetX;
+        oy = e.offsetY;
+    }
 
     let m, w;
-
     if (self.config.direction == 'x') {
         w = self.ctx.canvas.width / r;
         m = ox;
@@ -288,7 +306,7 @@ function absoluteMove(self, e){
         m = w - oy - 1;
     }
     const id = util.constrain(Math.floor(m / w * t), 0, t - 1);
-    if (id != self.current){
+    if (id != self.current) {
         self.drawImage(id);
         self.current = id;
     }
@@ -302,7 +320,7 @@ function absoluteMove(self, e){
 // TODO: could be more efficient...
 // TODO: break out in own module
 
-function parseSequence(from, to){
+function parseSequence(from, to) {
     const l = Math.min(from.length, to.length);
     let i = Math.max(0, from.lastIndexOf('/'));
     while (from.charAt(i) == to.charAt(i) && !/[1-9]/.test(from.charAt(i)) && i < l) i++;
@@ -326,10 +344,10 @@ function parseSequence(from, to){
 
 // Builds a list of files from a 'sequence object' return from parseSequence()
 // NOTE: could be better... (is it even necessary?)
-function buildFileList(sequenceObj, step = 1){
+function buildFileList(sequenceObj, step = 1) {
     const q = [];
     const dir = sequenceObj.from > sequenceObj.to ? -1 : 1;
-    for (let i=0; i<sequenceObj.length; i += step){
+    for (let i=0; i<sequenceObj.length; i += step) {
         const n = (sequenceObj.from + i * dir).toString();
         const num = util.padLeft(n, '0', sequenceObj.zeroes);
         //while (num.length < sequenceObj.zeroes) num = '0' + num;
@@ -339,13 +357,13 @@ function buildFileList(sequenceObj, step = 1){
 }
 
 // TODO: break out in own module
-function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCallbak){
+function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCallbak) {
     const concurrentLoads = Math.min(fileList.length, 4);
     let current = arrayToPopulate.length - 1; // id: order in array
     let count = arrayToPopulate.length;       // count: count of image loaded... can be out of sync of id.
     for (let i=0; i<concurrentLoads; i++) loadNext();
 
-    function loadNext(){
+    function loadNext() {
         if (current >= fileList.length -1) return;
         current++;
 
@@ -353,14 +371,14 @@ function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCa
         const img = new Image();
         img.src = fileList[current];
         (function(id) {
-            img.onload = function(e){
+            img.onload = function(e) {
                 if (typeof imageLoadCallback === 'function') imageLoadCallback({
                     id    : id,
                     img   : img,
                     count : ++count,
                     total : fileList.length
                 });
-                if (count < fileList.length ){
+                if (count < fileList.length ) {
                     loadNext();
                 }
                 if (count == fileList.length) {
@@ -369,7 +387,7 @@ function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCa
                     });
                 }
             };
-            img.onerror = function(e){
+            img.onerror = function(e) {
                 console.error('Error with: ' + fileList[id]);
             };
         })(current);
@@ -378,9 +396,6 @@ function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCa
 }
 
 export default {
-
     make      : make,
     instances : instances
-
 };
-
