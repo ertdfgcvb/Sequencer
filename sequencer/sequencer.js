@@ -113,7 +113,7 @@ class S{
         }
     }
 
-    nextImage (loop) {
+    nextImage(loop) {
         if (!loop) loop = this.config.loop;
         if(loop === 'pong') {
             this.current += this.pongSign;
@@ -130,7 +130,7 @@ class S{
         }
     }
 
-    drawImage (id) {
+    drawImage(id) {
         if (id === undefined) id = this.current;
         if (id < 0 || id >= this.images.length) return;
         const img = this.images[id];
@@ -167,7 +167,7 @@ class S{
         this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~ox, ~~oy, ~~iw, ~~ih);
     }
 
-    size (w, h) {
+    size(w, h) {
         const r = this.config.retina ? window.devicePixelRatio : 1;
         const c = this.ctx.canvas;
         c.width = w * r;
@@ -275,6 +275,9 @@ function relativeMove(self, e) {
         self.drawImage(id);
         self.current = id;
     }
+
+    // remove bounce on mobile
+    e.preventDefault();
 }
 
 function absoluteMove(self, e) {
@@ -305,11 +308,15 @@ function absoluteMove(self, e) {
         w = self.ctx.canvas.height / r;
         m = w - oy - 1;
     }
+
     const id = util.constrain(Math.floor(m / w * t), 0, t - 1);
     if (id != self.current) {
         self.drawImage(id);
         self.current = id;
     }
+
+    // remove bounce on mobile
+    e.preventDefault();
 }
 
 // Parses sequences described like this
