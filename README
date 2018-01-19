@@ -69,6 +69,8 @@ Changelog:
 
 --------------------------------------------------------------------------------
 Todo:
+    - transpiled version for ES5 support
+    - area hovering 
     - accept an image array as parameter
     - accept a spritesheet as parameter
     - WebGL support
