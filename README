@@ -43,8 +43,8 @@ How to use:
                                         // needs to be triggered manually with load().
         fitFirstImage    : false,       // resizes the canvas to the size of
                                         // the first loaded image in the sequence
-        showLoadedImages : false,       // shows images while loading the sequence,
-                                        // may be jumpy because of async laoding
+        showLoadedImages : false,       // show images while loading the sequence, 
+                                        // may be jumpy because of async laoding <- not a typo
         dragAmount       : 10,          // distance (in pixels) to trigger nextImage(),
                                         // can be < 1, but must be > 0
         retina           : true,        // use HDPI if present
@@ -69,6 +69,7 @@ Changelog:
 
 --------------------------------------------------------------------------------
 Todo:
+    - remove 'loop' option (merge with playMode)
     - transpiled version for ES5 support
     - area hovering 
     - accept an image array as parameter
