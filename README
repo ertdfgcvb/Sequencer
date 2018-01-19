@@ -1,12 +1,13 @@
 Sequencer
 A fast(?) fullscreen image-sequence player
 
+--------------------------------------------------------------------------------
+Demo:
+    https://ertdfgcvb.xyz/p2/sm/play.html#4
 
 --------------------------------------------------------------------------------
 How to use:
-
     The minimum paramters are two filenames of an image sequence.
-
     The parser tries to figure out if there are leading zeroes:
 
     const s1 = Sequencer.make({
@@ -53,7 +54,6 @@ How to use:
 
 --------------------------------------------------------------------------------
 Changelog:
-
       2.1
     - update to ECMAScript 2015 (aka ES6)
     - script is now an ES6 module (may need transpiling for legacy support)
@@ -67,14 +67,12 @@ Changelog:
     - removed default loader (a custom one can be implemented via callback)
     - cover frame
 
-
 --------------------------------------------------------------------------------
 Todo:
     - accept an image array as parameter
     - accept a spritesheet as parameter
     - WebGL support
     - better touch support
-
 
 --------------------------------------------------------------------------------
 Author:
