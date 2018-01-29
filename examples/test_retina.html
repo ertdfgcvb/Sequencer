@@ -4,31 +4,35 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Sequencer test</title>
 		<style type="text/css">
-			body   { margin:0; padding:0; }
-			canvas { display: block; float:left; margin: 1em;}
+			body   { margin:1em; padding:0; }
+			canvas {
+				background-color: rgb(0,0,0);
+				display : block;
+			}
 		</style>
 	</head>
-	<body></body>
+	<body>
+		<canvas width="300" height="200"></canvas>hiDPI : false<br>
+		<br>
+		<canvas width="300" height="200"></canvas>hiDPI : true<br>
+	</body>
 	<script type="module">
 
 		import Sequencer from '../sequencer/sequencer.js';
 
-		for (let i=0; i<30; i++){
-			const c = document.createElement('canvas');
-			c.width  = 200;
-			c.height = 150;
-			document.body.appendChild(c);
+		// test to check if aspect and size is the same with hiDPI enabled / disabled
+
+		for (let i=0; i<2; i++){
 			const s = Sequencer.make({
-				canvas           : c,
+				canvas           : document.querySelectorAll("canvas")[i],
 				from             : 'pics/pig/DSC04701.JPG',
 				to               : 'pics/pig/DSC04775.JPG',
 				direction        : "-x",
-				playMode         : "auto",
-				scaleMode        : "cover",
-				loop             : i % 2 === 0 ? "pong" : "loop",
-				fitFirstImage    : false,
+				playMode         : "hover",
+				scaleMode        : "auto",
 				showLoadedImages : false,
-				hiDPI           : true,
+				fitFirstImage    : false,
+				hiDPI            : i % 2,
 				imageLoad        : function(e){
 					//console.log("[id: " + e.id + "] " + e.count + "/" + e.total);
 				},
@@ -37,5 +41,6 @@
 				}
 			});
 		}
+
 	</script>
 </html>

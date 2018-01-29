@@ -47,7 +47,7 @@ How to use:
                                         // may be jumpy because of async laoding <- not a typo
         dragAmount       : 10,          // distance (in pixels) to trigger nextImage(),
                                         // can be < 1, but must be > 0
-        retina           : true,        // use HDPI if present
+        hiDPI            : true,        // use HDPI if present
         imageLoad        : function     // callback for each image load
         queueComplete    : function     // callback for queue complete
     };

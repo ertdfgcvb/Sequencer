@@ -42,10 +42,13 @@ class S{
             fitFirstImage    : false,        // resizes the canvas to the size of the first loaded image in the sequence
             showLoadedImages : false,        // don't display images while loading
             dragAmount       : 10,
-            retina           : true,
+            hiDPI            : true,
         };
 
         this.config = Object.assign({}, defaults, opts);
+
+        // backwards compatibility: .retina field is assigned to .hiDPI (Retina is an Apple trademark)
+        if (opts.hasOwnProperty('retina')) this.config.hiDPI = opts.retina;
 
         if (this.config.from == '' && this.config.to == '') {
             console.error("Missing filenames.");
@@ -133,10 +136,11 @@ class S{
     drawImage(id) {
         if (id === undefined) id = this.current;
         if (id < 0 || id >= this.images.length) return;
-        const img = this.images[id];
-        const cw = this.ctx.canvas.width;
-        const ch = this.ctx.canvas.height;
+        const r = this.config.hiDPI ? window.devicePixelRatio : 1;
+        const cw = this.ctx.canvas.width / r;
+        const ch = this.ctx.canvas.height / r;
         const ca = cw / ch;
+        const img = this.images[id];
         const ia = img.width / img.height;
         let iw, ih;
 
@@ -161,20 +165,23 @@ class S{
             ih = img.height;
         }
 
-        const ox = cw/2 - iw/2;
-        const oy = ch/2 - ih/2;
+        const ox = (cw/2 - iw/2);
+        const oy = (ch/2 - ih/2);
+
+        this.ctx.save();
+        this.ctx.scale(r, r);
         this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
-        this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~ox, ~~oy, ~~iw, ~~ih);
+        this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~(ox), ~~(oy), ~~iw, ~~ih);
+        this.ctx.restore();
     }
 
     size(w, h) {
-        const r = this.config.retina ? window.devicePixelRatio : 1;
+        const r = this.config.hiDPI ? window.devicePixelRatio : 1;
         const c = this.ctx.canvas;
         c.width = w * r;
         c.height = h * r;
         c.style.width = w + 'px';
         c.style.height = h + 'px';
-        //this.ctx.scale(r, r);
         this.drawImage();
     }
 }

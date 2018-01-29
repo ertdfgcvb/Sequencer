@@ -15,6 +15,9 @@
 		<canvas></canvas>
 	</body>
 	<script type="module">
+
+		import Sequencer from '../sequencer/sequencer.js';
+
 		const s = Sequencer.make({
 			canvas           : document.querySelector("canvas"),
 			from             : 'pics/pig/DSC04701.JPG',
@@ -23,7 +26,7 @@
 			playMode         : "hover",
 			scaleMode        : "cover",
 			showLoadedImages : false,
-			retina           : true,
+			hiDPI           : true,
 			imageLoad        : function(e){
 				//console.log("[id: " + e.id + "] " + e.count + "/" + e.total);
 			},
