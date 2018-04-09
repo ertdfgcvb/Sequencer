@@ -35,8 +35,8 @@ class S{
             step             : 1,            // increment: to load only even images use 2, etc
             scaleMode        : 'cover',      // as in CSS3, can be: auto, cover, contain
             direction        : 'x',          // mouse direction, can be x, -x, y, -y, applies only if playMode is 'drag' or 'hover'
-            playMode         : 'drag',       // none, drag, hover, auto
-            loop             : 'loop',       // loop, pong or none
+            playMode         : 'drag',       // none, drag, hover, auto    TODO: remove auto, add loop, pong, once
+            loop             : 'loop',       // loop, pong or none         TODO: remove
             interval         : 0,            // interval in milliseconds between each frame, applies only if playMode is 'auto'
             autoLoad         : 'all',        // all, first, none: triggers the loading of the queue immediatly, can be disabled to be triggered in a different moment
             fitFirstImage    : false,        // resizes the canvas to the size of the first loaded image in the sequence
