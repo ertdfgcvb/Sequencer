@@ -83,6 +83,14 @@ class S{
         }
     }
 
+    set(option, value) {
+        this.config[option] = value;
+    }
+
+    get(option) {
+        return this.config[option];
+    }
+
     load() {
         this.load = function() {
             console.log("load() can be called only once.");
@@ -105,6 +113,7 @@ class S{
         } else if (this.config.playMode === 'auto') {
             let pt = 0;
             const loop = (t)=> {
+                if (this.config.playMode !== 'auto') return;
                 const dt = t - pt;
                 if (dt >= this.config.interval) {
                     this.nextImage();
@@ -114,6 +123,15 @@ class S{
             };
             requestAnimationFrame(loop);
         }
+    }
+
+    play() {
+        this.set('playMode', 'auto');
+        this.run();
+    }
+
+    pause() {
+        this.set('playMode', 'none');
     }
 
     nextImage(loop) {
@@ -167,7 +185,10 @@ class S{
 
         const ox = (cw/2 - iw/2);
         const oy = (ch/2 - ih/2);
-
+        
+        if (typeof drawImageCallback === 'function')
+          drawImageCallback(this, id);
+        
         this.ctx.save();
         this.ctx.scale(r, r);
         this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
