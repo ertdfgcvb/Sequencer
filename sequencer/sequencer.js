@@ -284,7 +284,7 @@ function relativeMove(self, e) {
 function absoluteMove(self, e) {
 
     const t = self.images.length;
-    const r = self.config.retina ? window.devicePixelRatio : 1;
+    const r = self.config.hiDPI ? window.devicePixelRatio : 1;
 
     let ox, oy;
     if (e.touches) {
