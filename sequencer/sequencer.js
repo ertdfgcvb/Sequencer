@@ -1,22 +1,19 @@
-/*
+/**
  * Sequencer - A fast(?) fullscreen image-sequence player.
- * (c) 2012-20
- * See README or visit github (link below) for details
- *
- * Author:
- *      Andreas Gysin
- *      ertdfgcvb.xyz (Web)
- *      @andreasgysin (Twitter)
- *
- * Project:
- *      http://github.com/ertdfgcvb/Sequencer
+ * See README or visit github (link below) for details.
+ * @copyright 2012-20
+ * @version 3.0.0b
+ * @author Andreas Gysin
+ *         https://ertdfgcvb.xyz
+ *         https://github.com/ertdfgcvb/Sequencer
  */
+
+const instances = [];
 
 import context from "./context.js";
 import util from "./util.js";
 import {parse} from "./parser.js";
 
-const instances = [];
 
 function make(cfg) {
     const s = new S(cfg);
