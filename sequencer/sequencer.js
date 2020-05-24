@@ -11,9 +11,7 @@
 const instances = [];
 
 import context from "./context.js";
-import util from "./util.js";
 import {parse} from "./parser.js";
-
 
 function make(cfg) {
     const s = new S(cfg);
@@ -281,6 +279,12 @@ function relativeMove(self, e) {
     e.preventDefault();
 }
 
+function constrain(v, a, b){
+    if (v < a) return a;
+    if (v > b) return b;
+    return v;
+}
+
 function absoluteMove(self, e) {
 
     const t = self.images.length;
@@ -310,7 +314,7 @@ function absoluteMove(self, e) {
         m = w - oy - 1;
     }
 
-    const id = util.constrain(Math.floor(m / w * t), 0, t - 1);
+    const id = constrain(Math.floor(m / w * t), 0, t - 1);
     if (id != self.current) {
         self.drawImage(id);
         self.current = id;
@@ -318,21 +322,6 @@ function absoluteMove(self, e) {
 
     // remove bounce on mobile
     e.preventDefault();
-}
-
-
-// Builds a list of files from a 'sequence object' return from parseSequence()
-// NOTE: could be better... (is it even necessary?)
-function buildFileList(sequenceObj, step = 1) {
-    const q = [];
-    const dir = sequenceObj.from > sequenceObj.to ? -1 : 1;
-    for (let i=0; i<sequenceObj.length; i += step) {
-        const n = (sequenceObj.from + i * dir).toString();
-        const num = util.padLeft(n, '0', sequenceObj.zeroes);
-        //while (num.length < sequenceObj.zeroes) num = '0' + num;
-        q.push(sequenceObj.base + num + sequenceObj.ext);
-    }
-    return q;
 }
 
 // TODO: break out in own module
