@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Parser test</title>
+        <style type="text/css">
+            body{
+                padding: 3em;
+            }
+            pre{
+                margin:0;
+                font-family: monospace, monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <pre></pre>
+    </body>
+    <script type="module">
+
+        import {
+            last_number,
+            basename_before,
+            basename_after,
+            parse
+        } from '../sequencer/parser.js'
+
+        const pre = document.querySelector('pre')
+        const PAD_LENGTH = 70
+
+        const test_files = [
+            "",
+            "98",
+            "abc.JPG",
+            "98.JPG",
+            "98.jpg",
+            "9988.jpg",
+            "32.98.jpg",
+            "-98.jpg",
+            "pic0098.jpg",
+            "pic (98).jpg",
+            "pic32-98.jpg",
+            "folder32/98.jpg",
+        ]
+
+        // Test last_number
+        pre.innerHTML += "".padStart(PAD_LENGTH, "-") + "\n"
+        test_files.forEach( e => {
+            pre.innerHTML += ("last_number('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + last_number(e) + "\n"
+        })
+        pre.innerHTML += "\n"
+
+        // Test basename_before
+        pre.innerHTML += "".padStart(PAD_LENGTH, "-") + "\n"
+        test_files.forEach( e => {
+            pre.innerHTML += ("basename_before('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + basename_before(e) + "\n"
+        })
+        pre.innerHTML += "\n"
+
+        // Test basename_after
+        pre.innerHTML += "".padStart(PAD_LENGTH, "-") + "\n"
+        test_files.forEach( e => {
+            pre.innerHTML += ("basename_after('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + basename_after(e) + "\n"
+        })
+        pre.innerHTML += "\n"
+
+        const test_sequences = [
+            {from : "98.jpg",           to : "103.jpg",           desc : "without leading zeroes" },
+            {from : "098.jpg",          to : "103.jpg",           desc : "with leading zeroes" },
+            {from : "pic98.jpg",        to : "pic103.jpg",        desc : "without leading zeroes" },
+            {from : "pic0098.jpg",      to : "pic0103.jpg",       desc : "with leading zeroes" },
+            {from : "pic32-98.jpg",     to : "pic32-103.jpg",     desc : "basename with digits" },
+            {from : "pic (98).jpg",     to : "pic (103).jpg",     desc : "number not in last position" },
+            {from : "98pic.jpg",        to : "103pic.jpg",        desc : "number in first position" },
+            {from : "folder/pic98.jpg", to : "folder/pic103.jpg", desc : "with folder" },
+            {from : "pic90.jpg",        to : "pic127.JPG",        desc : "extension not the same" },
+            {from : "pic90.jpg",        to : "PIC127.jpg",        desc : "basename not the same" },
+            {from : "pic098.jpg",       to : "pic0103.jpg",       desc : "leading zeroes not the same length" }
+        ]
+
+        test_sequences.forEach( e => {
+            pre.innerHTML += "".padStart(PAD_LENGTH, "-") + "\n"
+            // pre.innerHTML += e.desc + "\n"
+            pre.innerHTML += "from: " + e.from + " (" + e.desc + ")\n"
+            pre.innerHTML += "to:   " + e.to + "\n"
+            pre.innerHTML += JSON.stringify(parse(e.from, e.to)) + "\n"
+            pre.innerHTML += "\n"
+        })
+
+
+    </script>
+</html>

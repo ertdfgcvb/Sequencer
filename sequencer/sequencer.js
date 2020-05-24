@@ -1,6 +1,6 @@
 /*
  * Sequencer - A fast(?) fullscreen image-sequence player.
- * (c) 2012-18
+ * (c) 2012-20
  * See README or visit github (link below) for details
  *
  * Author:
@@ -12,10 +12,9 @@
  *      http://github.com/ertdfgcvb/Sequencer
  */
 
-// jshint esversion: 6
-
 import context from "./context.js";
 import util from "./util.js";
+import {parse} from "./parser.js";
 
 const instances = [];
 
@@ -70,9 +69,7 @@ class S{
         this.lastLoaded = -1;
         this.pongSign = 1;
         this.ctx = this.config.canvas.getContext('2d');
-
-        const s = parseSequence(this.config.from, this.config.to);
-        this.fileList = buildFileList(s, this.config.step);
+        this.fileList = parse(this.config.from, this.config.to, this.config.step);
 
         this.size(this.ctx.canvas.width, this.ctx.canvas.height);
 
@@ -326,35 +323,6 @@ function absoluteMove(self, e) {
     e.preventDefault();
 }
 
-// Parses sequences described like this
-// from : DSC00998.jpg
-// to   : DSC01112.jpg
-// by extracting the base name, the number, the extension, etc.
-// returns an object with the necessary fields
-// TODO: could be more efficient...
-// TODO: break out in own module
-
-function parseSequence(from, to) {
-    const l = Math.min(from.length, to.length);
-    let i = Math.max(0, from.lastIndexOf('/'));
-    while (from.charAt(i) == to.charAt(i) && !/[1-9]/.test(from.charAt(i)) && i < l) i++;
-    const a  = from.slice(i, from.lastIndexOf('.'));      // from, may contain leading zeros
-    const b  = to.slice(i, to.lastIndexOf('.'));          // to
-    const ia = parseInt(a);
-    const ib = parseInt(b);
-    return {
-        from   : ia,
-        to     : ib,
-        base   : from.substr(0, i),
-        ext    : from.substr(from.lastIndexOf('.')),
-        zeroes : (a.length == b.length) && (Math.floor(log10(ia)) < Math.floor(log10(ib))) ? a.length : 0,
-        length : Math.abs(ib - ia) + 1
-    };
-
-    function log10(x) {
-        return Math.log(x) / Math.LN10;
-    }
-}
 
 // Builds a list of files from a 'sequence object' return from parseSequence()
 // NOTE: could be better... (is it even necessary?)
