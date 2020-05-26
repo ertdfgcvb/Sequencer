@@ -13,14 +13,14 @@ How to use:
     const s1 = Sequencer.make({
         from : 'pics/pig/DSC04701.JPG',
         to   : 'pics/pig/DSC04775.JPG',
-    });
+    })
 
     ...or just a plain numerical sequence:
 
     const s2 = Sequencer.make({
         from : 'pics/dog/1.png',
         to   : 'pics/dog/100.png',
-    });
+    })
 
     All options:
 
