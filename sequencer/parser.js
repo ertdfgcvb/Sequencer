@@ -6,7 +6,6 @@
 // An optional step parameter can be passed; it defaults to 1.
 // Returns an empty array and a warning in the console
 // if the parsing wasn't successful.
-
 export function parse(first, last, every=1) {
 
     // The output array to populate
