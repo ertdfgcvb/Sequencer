@@ -25,35 +25,51 @@ How to use:
     All options:
 
     const opts = {
-        canvas           : null,        // a valid canvas element (will be created if null)
+        canvas           : null,        // a valid canvas element
+        								// (will be created if null)
         from             : '1.jpg',     // first file of the sequence
         to               : '10.jpg',    // last file of the sequence
-        step             : 1,           // increment: to load only even images use 2, etc.
-        scaleMode        : 'cover',     // can be: auto, cover, contain as in CSS3,
+        step             : 1,           // increment: to load only even images
+        								// use 2, etc.
+        scaleMode        : 'cover',     // can be: auto, cover, contain
+        								// as in CSS3,
         direction        : 'x',         // can be: x, -x, y, -y
                                         // and determines the pointer direction,
-                                        // applies only if playMode is drag or hover
+                                        // applies only if playMode
+                                        // is drag or hover
         playMode         : 'drag',      // can be: none, drag, hover, auto
         loop             : 'loop',      // can be: loop, pong, none
-        interval         : 10,          // interval in milliseconds between each frame,
+        interval         : 10,          // interval in milliseconds/
+        								// between each frame,
                                         // applies only if playMode is auto,
-                                        // if set to zero tries to update at every frame event
+                                        // if set to zero tries to update
+                                        // at every frame event
         autoLoad         : 'all',       // can be: all, first, none,
                                         // if first or none is used the loading
-                                        // needs to be triggered manually with load().
+                                        // needs to be triggered manually
+                                        // with load().
         fitFirstImage    : false,       // resizes the canvas to the size of
-                                        // the first loaded image in the sequence
-        showLoadedImages : false,       // show images while loading the sequence, 
-                                        // may be jumpy because of async laoding <- not a typo
-        dragAmount       : 10,          // distance (in pixels) to trigger nextImage(),
+                                        // the first loaded image
+                                        // in the sequence
+        showLoadedImages : false,       // show images while loading
+        								// the sequence, may be jumpy because
+        								// of async laoding <- not a typo
+        dragAmount       : 10,          // distance (in pixels)
+        								// to trigger nextImage(),
                                         // can be < 1, but must be > 0
-        hiDPI            : true,        // use HDPI if present
+        hiDPI            : true,        // use hiDPI if present
         imageLoad        : function     // callback for each image load
         queueComplete    : function     // callback for queue complete
     };
 
 --------------------------------------------------------------------------------
 Changelog:
+	  3.0
+	- better parser
+	- remove utils.js
+	- use rollup.js for compression
+	- minified version is a module
+
       2.1
     - update to ECMAScript 2015 (aka ES6)
     - script is now an ES6 module (may need transpiling for legacy support)
@@ -70,8 +86,7 @@ Changelog:
 --------------------------------------------------------------------------------
 Todo:
     - remove 'loop' option (merge with playMode)
-    - transpiled version for ES5 support
-    - area hovering 
+    - area hovering
     - accept an image array as parameter
     - accept a spritesheet as parameter
     - WebGL support
@@ -80,4 +95,4 @@ Todo:
 --------------------------------------------------------------------------------
 Author:
     Andreas Gysin
-    @andreasgysin (twitter)
+    ertdfgcvb.xyz
