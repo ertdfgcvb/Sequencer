@@ -39,7 +39,7 @@ class S{
             hiDPI            : true,
         }
 
-        this.config = Object.assign({}, defaults, opts)
+        this.config = {...defaults, ...opts}
 
         if (this.config.from == '' && this.config.to == '') {
             console.error("Missing filenames.")
