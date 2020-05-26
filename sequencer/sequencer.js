@@ -41,9 +41,6 @@ class S{
 
         this.config = Object.assign({}, defaults, opts)
 
-        // backwards compatibility: .retina field is assigned to .hiDPI (Retina is an Apple trademark)
-        if (opts.hasOwnProperty('retina')) this.config.hiDPI = opts.retina
-
         if (this.config.from == '' && this.config.to == '') {
             console.error("Missing filenames.")
             return false
