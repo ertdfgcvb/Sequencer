@@ -39,7 +39,7 @@ How to use:
                                         // is drag or hover
         playMode         : 'drag',      // can be: none, drag, hover, auto
         loop             : 'loop',      // can be: loop, pong, none
-        interval         : 10,          // interval in milliseconds/
+        interval         : 10,          // interval in milliseconds
                                         // between each frame,
                                         // applies only if playMode is auto,
                                         // if set to zero tries to update
