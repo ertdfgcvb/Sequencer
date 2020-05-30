@@ -25,41 +25,47 @@ How to use:
     All options:
 
     const opts = {
-        canvas           : null,        // a valid canvas element
+        canvas           : null,        // A valid canvas element
                                         // (will be created if null)
-        from             : '1.jpg',     // first file of the sequence
-        to               : '10.jpg',    // last file of the sequence
-        step             : 1,           // increment: to load only even images
+        list             : null         // An array of paths
+                                        // to the images to load;
+                                        // as an alternative the three options
+                                        // 'from', 'to' and 'step' below
+                                        // can be used to fill the array
+                                        // programmatically
+        from             : '1.jpg',     // First file of the sequence
+        to               : '10.jpg',    // Last file of the sequence
+        step             : 1,           // Increment: to load only even images
                                         // use 2, etc.
-        scaleMode        : 'cover',     // can be: auto, cover, contain
+        scaleMode        : 'cover',     // Can be: auto, cover, contain
                                         // as in CSS3,
-        direction        : 'x',         // can be: x, -x, y, -y
+        direction        : 'x',         // Can be: x, -x, y, -y
                                         // and determines the pointer direction,
                                         // applies only if playMode
                                         // is drag or hover
-        playMode         : 'drag',      // can be: none, drag, hover, auto
-        loop             : 'loop',      // can be: loop, pong, none
-        interval         : 10,          // interval in milliseconds
+        playMode         : 'drag',      // Can be: none, drag, hover, auto
+        loop             : 'loop',      // Can be: loop, pong, none
+        interval         : 10,          // Interval in milliseconds
                                         // between each frame,
                                         // applies only if playMode is auto,
                                         // if set to zero tries to update
                                         // at every frame event
-        autoLoad         : 'all',       // can be: all, first, none,
+        autoLoad         : 'all',       // Can be: all, first, none,
                                         // if first or none is used the loading
                                         // needs to be triggered manually
                                         // with load().
-        fitFirstImage    : false,       // resizes the canvas to the size of
+        fitFirstImage    : false,       // Resizes the canvas to the size of
                                         // the first loaded image
                                         // in the sequence
-        showLoadedImages : false,       // show images while loading
+        showLoadedImages : false,       // Show images while loading
                                         // the sequence, may be jumpy because
                                         // of async laoding <- not a typo
-        dragAmount       : 10,          // distance (in pixels)
+        dragAmount       : 10,          // Distance (in pixels)
                                         // to trigger nextImage(),
                                         // can be < 1, but must be > 0
-        hiDPI            : true,        // use hiDPI if present
-        imageLoad        : function     // callback for each image load
-        queueComplete    : function     // callback for queue complete
+        hiDPI            : true,        // Use hiDPI if present
+        imageLoad        : function     // Callback for each image load
+        queueComplete    : function     // Callback for queue complete
     };
 
 --------------------------------------------------------------------------------
