@@ -7,8 +7,10 @@ Demo:
 
 --------------------------------------------------------------------------------
 How to use:
-    The minimum paramters are two filenames of an image sequence.
-    The parser tries to figure out if there are leading zeroes:
+    The minimum paramters are two filenames of an image sequence
+    or an array of filenames.
+
+    In the first case the parser tries to figure out the filename pattern:
 
     const s1 = Sequencer.make({
         from : 'pics/pig/DSC04701.JPG',
@@ -20,6 +22,20 @@ How to use:
     const s2 = Sequencer.make({
         from : 'pics/dog/1.png',
         to   : 'pics/dog/100.png',
+    })
+
+    ...or with a provided list of filenames:
+
+    const s2 = Sequencer.make({
+        list : [
+            '1a.png',
+            '1b.png',
+            '2.png',
+            '3.PNG',
+            '4.jpg',
+            'img7.png',
+            'final.jpg'
+        ]
     })
 
     All options:
@@ -70,6 +86,7 @@ How to use:
 
 --------------------------------------------------------------------------------
 Changelog:
+
       3.0
     - better parser
     - remove utils.js
