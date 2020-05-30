@@ -118,6 +118,7 @@ class S{
     constructor(opts) {
         const defaults = {
             canvas           : null,
+            list             : null,
             from             : '',
             to               : '',
             step             : 1,            // increment: to load only even images use 2, etc
@@ -135,7 +136,7 @@ class S{
 
         this.config = {...defaults, ...opts};
 
-        if (this.config.from == '' && this.config.to == '') {
+        if (this.config.from == '' && this.config.to == '' && this.config.list === null) {
             console.error("Missing filenames.");
             return false
         }
@@ -155,12 +156,13 @@ class S{
         this.lastLoaded = -1;
         this.pongSign = 1;
         this.ctx = this.config.canvas.getContext('2d');
-        this.fileList = parse(this.config.from, this.config.to, this.config.step);
+        // Take the provided list or build one with 'from' and 'to'
+        this.list = this.config.list || parse(this.config.from, this.config.to, this.config.step);
 
         this.size(this.ctx.canvas.width, this.ctx.canvas.height);
 
         if (this.config.autoLoad == 'first') {
-            new Preloader(this.images, [this.fileList.shift()], imageLoad.bind(null, this));
+            new Preloader(this.images, [this.list.shift()], imageLoad.bind(null, this));
         } else if (this.config.autoLoad == 'all') {
             this.load();
         }
@@ -171,7 +173,7 @@ class S{
             console.log("load() can be called only once.");
         };
 
-        new Preloader(this.images, this.fileList, imageLoad.bind(null, this), queueComplete.bind(null, this));
+        new Preloader(this.images, this.list, imageLoad.bind(null, this), queueComplete.bind(null, this));
     }
 
     run() {

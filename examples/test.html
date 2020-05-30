@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
 		<title>Sequencer test</title>
-		<style type="text/css">
+		<style type='text/css'>
 			body{
 				padding: 3em;
 			}
@@ -36,15 +36,43 @@
 		</style>
 	</head>
 	<body></body>
-	<script type="module">
+	<script type='module'>
 
 		import Sequencer from '../dist/sequencer.js';
+
+		const list = [
+			'DSC04701.JPG','DSC04702.JPG','DSC04703.JPG','DSC04704.JPG',
+			'DSC04705.JPG','DSC04706.JPG','DSC04707.JPG','DSC04708.JPG',
+			'DSC04709.JPG','DSC04710.JPG','DSC04711.JPG','DSC04712.JPG',
+			'DSC04713.JPG','DSC04714.JPG','DSC04715.JPG','DSC04716.JPG',
+			'DSC04717.JPG','DSC04718.JPG','DSC04719.JPG','DSC04720.JPG',
+			'DSC04721.JPG','DSC04722.JPG','DSC04723.JPG','DSC04724.JPG',
+			'DSC04725.JPG','DSC04726.JPG','DSC04727.JPG','DSC04728.JPG',
+			'DSC04729.JPG','DSC04730.JPG','DSC04731.JPG','DSC04732.JPG',
+			'DSC04733.JPG','DSC04734.JPG','DSC04735.JPG','DSC04736.JPG',
+			'DSC04737.JPG','DSC04738.JPG','DSC04739.JPG','DSC04740.JPG',
+			'DSC04741.JPG','DSC04742.JPG','DSC04743.JPG','DSC04744.JPG',
+			'DSC04745.JPG','DSC04746.JPG','DSC04747.JPG','DSC04748.JPG',
+			'DSC04749.JPG','DSC04750.JPG','DSC04751.JPG','DSC04752.JPG',
+			'DSC04753.JPG','DSC04754.JPG','DSC04755.JPG','DSC04756.JPG',
+			'DSC04757.JPG','DSC04758.JPG','DSC04759.JPG','DSC04760.JPG',
+			'DSC04761.JPG','DSC04762.JPG','DSC04763.JPG','DSC04764.JPG',
+			'DSC04765.JPG','DSC04766.JPG','DSC04767.JPG','DSC04768.JPG',
+			'DSC04769.JPG','DSC04770.JPG','DSC04771.JPG','DSC04772.JPG',
+			'DSC04773.JPG','DSC04774.JPG','DSC04775.JPG'
+		].map( e => {return 'pics/pig/' + e})
 
 		const configs = [];
 
 		configs.push({
 			from             : 'pics/pig/DSC04701.JPG',
 			to               : 'pics/pig/DSC04775.JPG',
+			playMode         : 'hover',
+			direction        : '-x',
+		});
+
+		configs.push({
+			list             : list,
 			playMode         : 'hover',
 			direction        : '-x',
 		});
@@ -128,26 +156,26 @@
 
 			if (cfg.autoLoad !== undefined) {
 				const btn = document.createElement('button');
-				btn.type = "button";
-				btn.innerHTML = "load()";
+				btn.type = 'button';
+				btn.innerHTML = 'load()';
 				td1.appendChild(btn);
 				btn.onclick = function(){
 					s.load();
 				};
 
 				cfg.imageLoad = function(e){
-					pre.innerHTML += "id:" + e.id + " count:"+ e.count + " total:" + e.total + " img.src:" + e.img.src.split('/').pop() + "\n";
+					pre.innerHTML += 'id:' + e.id + ' count:'+ e.count + ' total:' + e.total + ' img.src:' + e.img.src.split('/').pop() + '\n';
 				};
 
 				cfg.queueComplete = function(e){
-					pre.innerHTML += "Queue complete!\n";
+					pre.innerHTML += 'Queue complete!\n';
 				};
 			}
 
 			if (cfg.playMode == 'none') {
 				const btn = document.createElement('button');
-				btn.type = "button";
-				btn.innerHTML = "nextImage()";
+				btn.type = 'button';
+				btn.innerHTML = 'nextImage()';
 				td1.appendChild(btn);
 				btn.onclick = function(){
 					s.nextImage();
