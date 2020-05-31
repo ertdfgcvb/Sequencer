@@ -24,7 +24,7 @@ class S{
     constructor(opts) {
         const defaults = {
             canvas           : null,
-            list             : null,
+            list             : [],
             from             : '',
             to               : '',
             step             : 1,            // increment: to load only even images use 2, etc
@@ -42,13 +42,13 @@ class S{
 
         this.config = {...defaults, ...opts}
 
-        if (this.config.from == '' && this.config.to == '' && this.config.list === null) {
+        if (this.config.from == '' && this.config.to == '' && this.config.list.length == 0) {
             console.error("Missing filenames.")
             return false
         }
 
         // create a default canvas in case none is added:
-        if (!this.config.canvas) {
+        if (this.config.canvas === null) {
             const c = document.createElement('canvas')
             document.body.appendChild(c)
             this.config.canvas = c
