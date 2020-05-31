@@ -43,7 +43,7 @@ How to use:
     const opts = {
         canvas           : null,        // A valid canvas element
                                         // (will be created if null)
-        list             : null         // An array of paths
+        list             : []           // An array of paths
                                         // to the images to load;
                                         // as an alternative the three options
                                         // 'from', 'to' and 'step' below
