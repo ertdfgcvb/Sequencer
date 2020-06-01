@@ -63,7 +63,9 @@ class S{
         this.pongSign = 1
         this.ctx = this.config.canvas.getContext('2d')
         // Take the provided list or build one with 'from' and 'to'
-        this.list = this.config.list || parse(this.config.from, this.config.to, this.config.step)
+        this.list = this.config.list.length > 0 ?
+                    this.config.list :
+                    parse(this.config.from, this.config.to, this.config.step)
 
         this.size(this.ctx.canvas.width, this.ctx.canvas.height)
 
