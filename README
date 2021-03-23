@@ -87,6 +87,10 @@ How to use:
 --------------------------------------------------------------------------------
 Changelog:
 
+      3.0.1
+    - fix bug (last image not loaded)
+    - add makefile
+
       3.0
     - better parser
     - remove utils.js
