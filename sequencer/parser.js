@@ -8,46 +8,35 @@
 // if the parsing wasn't successful.
 export function parse(first, last, every=1) {
 
-    // The output array to populate
-    const out = []
+	// The output array to populate
+	const out = []
 
-    const a = last_number(first)
-    if (a === "") {
-        warn("the first filename doesn’t contain a number.")
-        return out
-    }
+	const a = last_number(first)
+	if (a === "") {
+		warn("the first filename doesn’t contain a number.")
+		return out
+	}
 
-    const b = last_number(last)
-    if (b === "") {
-        warn("the last filename doesn’t contain a number.")
-        return out
-    }
+	const b = last_number(last)
+	if (b === "") {
+		warn("the last filename doesn’t contain a number.")
+		return out
+	}
 
-    const before = basename_before(first)
-    const after = basename_after(first)
-    if (before != basename_before(last) || after != basename_after(last)) {
-        warn("the base-names of '" + first + "' and '" + last + "' don’t match.")
-        return out
-    }
+	const before = basename_before(first, a)
+	const after = basename_after(first, a)
 
-    const has_leading_zeroes = a.charAt(0) == 0 || b.charAt(0) == 0
-    if (has_leading_zeroes && a.length != b.length) {
-        warn("wrong number of leading zeros.")
-        return out
-    }
 
-    const num_a = parseInt(a)
-    const num_b = parseInt(b)
+	if (before !== basename_before(last, b) || after !== basename_after(last, b)) {
+		warn("the base-names of '" + first + "' and '" + last + "' don’t match.")
+		return out
+	}
 
-    if (has_leading_zeroes) {
-        for (let i=num_a; i<num_b; i+=every) {
-            out.push(before + (i + "").padStart(a.length, "0") + after)
-        }
-    } else {
-        for (let i=num_a; i<num_b; i+=every) {
-            out.push(before + i + after)
-        }
-    }
+	const has_leading_zeroes = a.charAt(0) == 0 || b.charAt(0) == 0
+	if (has_leading_zeroes && a.length != b.length) {
+		warn("wrong number of leading zeros.")
+		return out
+	}
 
     return out
 }
@@ -86,5 +75,5 @@ export function last_number(filename) {
 }
 
 function warn(msg) {
-    console.warn("Can’t parse the file sequence correctly, returning [].\nReason: " + msg)
+	console.warn("Can’t parse the file sequence correctly, returning [].\nReason: " + msg)
 }
