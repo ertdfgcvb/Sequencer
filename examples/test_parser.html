@@ -39,8 +39,9 @@
             "-98.jpg",
             "pic0098.jpg",
             "pic (98).jpg",
-            "pic32-98.jpg",
-            "folder32/98.jpg",
+            "pic98_bak.jpg",
+            "pic98-98.jpg",
+            "folder98/98.jpg",
         ]
 
         // Test last_number
@@ -53,14 +54,14 @@
         // Test basename_before
         pre.innerHTML += "".padStart(PAD_LENGTH, "-") + "\n"
         test_files.forEach( e => {
-            pre.innerHTML += ("basename_before('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + basename_before(e) + "\n"
+            pre.innerHTML += ("basename_before('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + basename_before(e, last_number(e)) + "\n"
         })
         pre.innerHTML += "\n"
 
         // Test basename_after
         pre.innerHTML += "".padStart(PAD_LENGTH, "-") + "\n"
         test_files.forEach( e => {
-            pre.innerHTML += ("basename_after('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + basename_after(e) + "\n"
+            pre.innerHTML += ("basename_after('" + e + "')").padEnd(PAD_LENGTH / 2, " ") + basename_after(e, last_number(e)) + "\n"
         })
         pre.innerHTML += "\n"
 
@@ -69,13 +70,14 @@
             {from : "098.jpg",          to : "103.jpg",           desc : "with leading zeroes" },
             {from : "pic98.jpg",        to : "pic103.jpg",        desc : "without leading zeroes" },
             {from : "pic0098.jpg",      to : "pic0103.jpg",       desc : "with leading zeroes" },
-            {from : "pic32-98.jpg",     to : "pic32-103.jpg",     desc : "basename with digits" },
+            {from : "pic32-32.jpg",     to : "pic32-34.jpg",      desc : "basename with digits" },
             {from : "pic (98).jpg",     to : "pic (103).jpg",     desc : "number not in last position" },
             {from : "98pic.jpg",        to : "103pic.jpg",        desc : "number in first position" },
             {from : "folder/pic98.jpg", to : "folder/pic103.jpg", desc : "with folder" },
-            {from : "pic90.jpg",        to : "pic127.JPG",        desc : "extension not the same" },
-            {from : "pic90.jpg",        to : "PIC127.jpg",        desc : "basename not the same" },
-            {from : "pic098.jpg",       to : "pic0103.jpg",       desc : "leading zeroes not the same length" }
+            {from : "folder1/pic1.jpg", to : "folder1/pic3.jpg",  desc : "with numbered folder" },
+            {from : "pic90.jpg",        to : "pic127.JPG",        desc : "extension not the same [should fail]" },
+            {from : "pic90.jpg",        to : "PIC127.jpg",        desc : "basename not the same [should fail]" },
+            {from : "pic098.jpg",       to : "pic0103.jpg",       desc : "leading zeroes not the same length [should fail]" }
         ]
 
         test_sequences.forEach( e => {
