@@ -14,5 +14,5 @@
 # npm install rollup -g
 
 build:
-	rollup -i sequencer/sequencer.js --format es --name sequencer -o dist/sequencer.js
+	rollup -i src/sequencer.js --format es --name sequencer -o dist/sequencer.js
 	terser --compress --mangle --toplevel --timings --ecma 2015 -- dist/sequencer.js > dist/sequencer.min.js
