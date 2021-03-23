@@ -38,7 +38,20 @@ export function parse(first, last, every=1) {
 		return out
 	}
 
-    return out
+	const num_a = parseInt(a)
+	const num_b = parseInt(b)
+
+	if (has_leading_zeroes) {
+		for (let i=num_a; i<=num_b; i+=every) {
+			out.push(before + (i + "").padStart(a.length, "0") + after)
+		}
+	} else {
+		for (let i=num_a; i<=num_b; i+=every) {
+			out.push(before + i + after)
+		}
+	}
+
+	return out
 }
 
 // Returns the part of a string before the last found number
