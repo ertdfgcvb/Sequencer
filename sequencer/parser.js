@@ -58,10 +58,11 @@ export function parse(first, last, every=1) {
 // Returns an empty string if no number is present
 // basename_before('folder32/98.jpg') "folder32/"
 // basename_before('abc.jpg') ""
-export function basename_before(filename){
-    const n = last_number(filename)
-    if (n === "") return ""
-    return filename.split(n)[0]
+export function basename_before(filename, lastNum){
+	//const r = new RegExp(`.+?(?=${lastNum})`, "g")
+	const m = filename.match(new RegExp(`.*(?=${lastNum})`))
+	if (m === null) return ""
+	return m.join("")
 }
 
 // Returns the part of a string after the last found number
@@ -71,10 +72,10 @@ export function basename_before(filename){
 // even if non number is present.
 // basename_after('folder32/98.jpg') ".jpg"
 // basename_after('abc.jpg') "abc.jpg"
-export function basename_after(filename){
-    const n = last_number(filename)
-    if (n === "") return filename
-    return filename.split(n)[1]
+export function basename_after(filename, lastNum){
+	const m = filename.match(new RegExp(`[^${lastNum}]+$`))
+	if (m === null) return ""
+	return m[0]
 }
 
 // Returns the last positive number in a string (with leading zeros)
@@ -82,9 +83,9 @@ export function basename_after(filename){
 // last_number('folder32/98.jpg') "98"
 // last_number('abc.jpg') ""
 export function last_number(filename) {
-    const m = filename.match(/\d+(?!.*\d)/g)
-    if (m === null) return ""
-    return m[0]
+	const m = filename.match(/\d+(?!.*\d)/g)
+	if (m === null) return ""
+	return m[0]
 }
 
 function warn(msg) {
