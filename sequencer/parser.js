@@ -26,7 +26,6 @@ export function parse(first, last, every=1) {
 	const before = basename_before(first, a)
 	const after = basename_after(first, a)
 
-
 	if (before !== basename_before(last, b) || after !== basename_after(last, b)) {
 		warn("the base-names of '" + first + "' and '" + last + "' don’t match.")
 		return out
@@ -41,14 +40,9 @@ export function parse(first, last, every=1) {
 	const num_a = parseInt(a)
 	const num_b = parseInt(b)
 
-	if (has_leading_zeroes) {
-		for (let i=num_a; i<=num_b; i+=every) {
-			out.push(before + (i + "").padStart(a.length, "0") + after)
-		}
-	} else {
-		for (let i=num_a; i<=num_b; i+=every) {
-			out.push(before + i + after)
-		}
+	for (let i=num_a; i<=num_b; i+=every) {
+		// Add leading zeroes, in case
+		out.push(before + (i + "").padStart(a.length, "0") + after)
 	}
 
 	return out
