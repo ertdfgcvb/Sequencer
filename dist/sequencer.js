@@ -1,8 +1,6 @@
 const hasTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints;
 
-var context = {
-    hasTouch
-};
+var context = { hasTouch };
 
 // Returns an array of strings parsed from two filenames like
 // first : DSC00998.jpg
@@ -14,58 +12,55 @@ var context = {
 // if the parsing wasn't successful.
 function parse(first, last, every=1) {
 
-    // The output array to populate
-    const out = [];
+	// The output array to populate
+	const out = [];
 
-    const a = last_number(first);
-    if (a === "") {
-        warn("the first filename doesn’t contain a number.");
-        return out
-    }
+	const a = last_number(first);
+	if (a === "") {
+		warn("the first filename doesn’t contain a number.");
+		return out
+	}
 
-    const b = last_number(last);
-    if (b === "") {
-        warn("the last filename doesn’t contain a number.");
-        return out
-    }
+	const b = last_number(last);
+	if (b === "") {
+		warn("the last filename doesn’t contain a number.");
+		return out
+	}
 
-    const before = basename_before(first);
-    const after = basename_after(first);
-    if (before != basename_before(last) || after != basename_after(last)) {
-        warn("the base-names of '" + first + "' and '" + last + "' don’t match.");
-        return out
-    }
+	const before = basename_before(first, a);
+	const after = basename_after(first, a);
 
-    const has_leading_zeroes = a.charAt(0) == 0 || b.charAt(0) == 0;
-    if (has_leading_zeroes && a.length != b.length) {
-        warn("wrong number of leading zeros.");
-        return out
-    }
+	if (before !== basename_before(last, b) || after !== basename_after(last, b)) {
+		warn("the base-names of '" + first + "' and '" + last + "' don’t match.");
+		return out
+	}
 
-    const num_a = parseInt(a);
-    const num_b = parseInt(b);
+	const has_leading_zeroes = a.charAt(0) == 0 || b.charAt(0) == 0;
+	if (has_leading_zeroes && a.length != b.length) {
+		warn("wrong number of leading zeros.");
+		return out
+	}
 
-    if (has_leading_zeroes) {
-        for (let i=num_a; i<num_b; i+=every) {
-            out.push(before + (i + "").padStart(a.length, "0") + after);
-        }
-    } else {
-        for (let i=num_a; i<num_b; i+=every) {
-            out.push(before + i + after);
-        }
-    }
+	const num_a = parseInt(a);
+	const num_b = parseInt(b);
 
-    return out
+	for (let i=num_a; i<=num_b; i+=every) {
+		// Add leading zeroes, in case
+		out.push(before + (i + "").padStart(a.length, "0") + after);
+	}
+
+	return out
 }
 
 // Returns the part of a string before the last found number
 // Returns an empty string if no number is present
 // basename_before('folder32/98.jpg') "folder32/"
 // basename_before('abc.jpg') ""
-function basename_before(filename){
-    const n = last_number(filename);
-    if (n === "") return ""
-    return filename.split(n)[0]
+function basename_before(filename, lastNum){
+	//const r = new RegExp(`.+?(?=${lastNum})`, "g")
+	const m = filename.match(new RegExp(`.*(?=${lastNum})`));
+	if (m === null) return ""
+	return m.join("")
 }
 
 // Returns the part of a string after the last found number
@@ -75,10 +70,10 @@ function basename_before(filename){
 // even if non number is present.
 // basename_after('folder32/98.jpg') ".jpg"
 // basename_after('abc.jpg') "abc.jpg"
-function basename_after(filename){
-    const n = last_number(filename);
-    if (n === "") return filename
-    return filename.split(n)[1]
+function basename_after(filename, lastNum){
+	const m = filename.match(new RegExp(`[^${lastNum}]+$`));
+	if (m === null) return ""
+	return m[0]
 }
 
 // Returns the last positive number in a string (with leading zeros)
@@ -86,13 +81,13 @@ function basename_after(filename){
 // last_number('folder32/98.jpg') "98"
 // last_number('abc.jpg') ""
 function last_number(filename) {
-    const m = filename.match(/\d+(?!.*\d)/g);
-    if (m === null) return ""
-    return m[0]
+	const m = filename.match(/\d+(?!.*\d)/g);
+	if (m === null) return ""
+	return m[0]
 }
 
 function warn(msg) {
-    console.warn("Can’t parse the file sequence correctly, returning [].\nReason: " + msg);
+	console.warn("Can’t parse the file sequence correctly, returning [].\nReason: " + msg);
 }
 
 /**
@@ -108,359 +103,359 @@ function warn(msg) {
 const instances = [];
 
 function make(cfg) {
-    const s = new S(cfg);
-    if (s !== false) instances.push(s);
-    return s
+	const s = new S(cfg);
+	if (s !== false) instances.push(s);
+	return s
 }
 
 class S{
 
-    constructor(opts) {
-        const defaults = {
-            canvas           : null,
-            list             : [],
-            from             : '',
-            to               : '',
-            step             : 1,            // increment: to load only even images use 2, etc
-            scaleMode        : 'cover',      // as in CSS3, can be: auto, cover, contain
-            direction        : 'x',          // mouse direction, can be x, -x, y, -y, applies only if playMode is 'drag' or 'hover'
-            playMode         : 'drag',       // none, drag, hover, auto    TODO: remove auto, add loop, pong, once
-            loop             : 'loop',       // loop, pong or none         TODO: remove
-            interval         : 0,            // interval in milliseconds between each frame, applies only if playMode is 'auto'
-            autoLoad         : 'all',        // all, first, none: triggers the loading of the queue immediatly, can be disabled to be triggered in a different moment
-            fitFirstImage    : false,        // resizes the canvas to the size of the first loaded image in the sequence
-            showLoadedImages : false,        // don't display images while loading
-            dragAmount       : 10,
-            hiDPI            : true,
-        };
+	constructor(opts) {
+		const defaults = {
+			canvas           : null,
+			list             : [],
+			from             : '',
+			to               : '',
+			step             : 1,       // increment: to load only even images use 2, etc
+			scaleMode        : 'cover', // as in CSS3, can be: auto, cover, contain
+			direction        : 'x',     // mouse direction, can be x, -x, y, -y, applies only if playMode is 'drag' or 'hover'
+			playMode         : 'drag',  // none, drag, hover, auto    TODO: remove auto, add loop, pong, once
+			loop             : 'loop',  // loop, pong or none         TODO: remove
+			interval         : 0,       // interval in milliseconds between each frame, applies only if playMode is 'auto'
+			autoLoad         : 'all',   // all, first, none: triggers the loading of the queue immediatly, can be disabled to be triggered in a different moment
+			fitFirstImage    : false,   // resizes the canvas to the size of the first loaded image in the sequence
+			showLoadedImages : false,   // don't display images while loading
+			dragAmount       : 10,
+			hiDPI            : true,
+		};
 
-        this.config = {...defaults, ...opts};
+		this.config = {...defaults, ...opts};
 
-        if (this.config.from == '' && this.config.to == '' && this.config.list.length == 0) {
-            console.error("Missing filenames.");
-            return false
-        }
+		if (this.config.from == '' && this.config.to == '' && this.config.list.length == 0) {
+			console.error("Missing filenames.");
+			return false
+		}
 
-        // create a default canvas in case none is added:
-        if (this.config.canvas === null) {
-            const c = document.createElement('canvas');
-            document.body.appendChild(c);
-            this.config.canvas = c;
-            this.config.fitFirstImage = true;
-        }
+		// create a default canvas in case none is added:
+		if (this.config.canvas === null) {
+			const c = document.createElement('canvas');
+			document.body.appendChild(c);
+			this.config.canvas = c;
+			this.config.fitFirstImage = true;
+		}
 
-        this.pointer = {x:0, y:0, down:false};
-        this.current = -1;
-        this.images = [];
-        this.directionSign = /-/.test(this.config.direction) ? -1 : 1;
-        this.lastLoaded = -1;
-        this.pongSign = 1;
-        this.ctx = this.config.canvas.getContext('2d');
-        // Take the provided list or build one with 'from' and 'to'
-        this.list = this.config.list.length > 0 ?
-                    this.config.list :
-                    parse(this.config.from, this.config.to, this.config.step);
+		this.pointer = {x:0, y:0, down:false};
+		this.current = -1;
+		this.images = [];
+		this.directionSign = /-/.test(this.config.direction) ? -1 : 1;
+		this.lastLoaded = -1;
+		this.pongSign = 1;
+		this.ctx = this.config.canvas.getContext('2d');
+		// Take the provided list or build one with 'from' and 'to'
+		this.list = this.config.list.length > 0 ?
+					this.config.list :
+					parse(this.config.from, this.config.to, this.config.step);
 
-        this.size(this.ctx.canvas.width, this.ctx.canvas.height);
+		this.size(this.ctx.canvas.width, this.ctx.canvas.height);
 
-        if (this.config.autoLoad == 'first') {
-            new Preloader(this.images, [this.list.shift()], imageLoad.bind(null, this));
-        } else if (this.config.autoLoad == 'all') {
-            this.load();
-        }
-    }
+		if (this.config.autoLoad == 'first') {
+			new Preloader(this.images, [this.list.shift()], imageLoad.bind(null, this));
+		} else if (this.config.autoLoad == 'all') {
+			this.load();
+		}
+	}
 
-    load() {
-        this.load = function() {
-            console.log("load() can be called only once.");
-        };
+	load() {
+		this.load = function() {
+			console.log("load() can be called only once.");
+		};
 
-        new Preloader(this.images, this.list, imageLoad.bind(null, this), queueComplete.bind(null, this));
-    }
+		new Preloader(this.images, this.list, imageLoad.bind(null, this), queueComplete.bind(null, this));
+	}
 
-    run() {
-        const _move = context.hasTouch ? 'touchmove'  : 'mousemove';
-        const _down = context.hasTouch ? 'touchstart' : 'mousedown';
-        const _up   = context.hasTouch ? 'touchend'   : 'mouseup';
+	run() {
+		const _move = context.hasTouch ? 'touchmove'  : 'mousemove';
+		const _down = context.hasTouch ? 'touchstart' : 'mousedown';
+		const _up   = context.hasTouch ? 'touchend'   : 'mouseup';
 
-        if (this.config.playMode === 'hover') {
-            this.ctx.canvas.addEventListener(_move, absoluteMove.bind(null, this));
-        } else if (this.config.playMode === 'drag') {
-            this.ctx.canvas.addEventListener(_move, relativeMove.bind(null, this));
-            this.ctx.canvas.addEventListener(_down, pointerDown.bind(null, this));
-            document.addEventListener(_up, pointerUp.bind(null, this));
-        } else if (this.config.playMode === 'auto') {
-            let pt = 0;
-            const loop = t => {
-                const dt = t - pt;
-                if (dt >= this.config.interval) {
-                    this.nextImage();
-                    pt = Math.max(t, t - (dt - this.config.interval));
-                }
-                requestAnimationFrame(loop);
-            };
-            requestAnimationFrame(loop);
-        }
-    }
+		if (this.config.playMode === 'hover') {
+			this.ctx.canvas.addEventListener(_move, absoluteMove.bind(null, this));
+		} else if (this.config.playMode === 'drag') {
+			this.ctx.canvas.addEventListener(_move, relativeMove.bind(null, this));
+			this.ctx.canvas.addEventListener(_down, pointerDown.bind(null, this));
+			document.addEventListener(_up, pointerUp.bind(null, this));
+		} else if (this.config.playMode === 'auto') {
+			let pt = 0;
+			const loop = t => {
+				const dt = t - pt;
+				if (dt >= this.config.interval) {
+					this.nextImage();
+					pt = Math.max(t, t - (dt - this.config.interval));
+				}
+				requestAnimationFrame(loop);
+			};
+			requestAnimationFrame(loop);
+		}
+	}
 
-    nextImage(loop) {
-        if (!loop) loop = this.config.loop;
-        if(loop === 'pong') {
-            this.current += this.pongSign;
-            if (this.current >= this.images.length-1) { //this.current could ev. change by other playmodes, so extra-checks are necessary
-                this.pongSign = -1;
-                this.current = this.images.length-1;
-            } else if (this.current <= 0) {
-                this.pongSign = 1;
-                this.current = 0;
-            }
-            this.drawImage(this.current);
-        } else {
-            this.drawImage(++this.current % this.images.length); //loop
-        }
-    }
+	nextImage(loop) {
+		if (!loop) loop = this.config.loop;
+		if(loop === 'pong') {
+			this.current += this.pongSign;
+			if (this.current >= this.images.length-1) { //this.current could ev. change by other playmodes, so extra-checks are necessary
+				this.pongSign = -1;
+				this.current = this.images.length-1;
+			} else if (this.current <= 0) {
+				this.pongSign = 1;
+				this.current = 0;
+			}
+			this.drawImage(this.current);
+		} else {
+			this.drawImage(++this.current % this.images.length); //loop
+		}
+	}
 
-    drawImage(id) {
-        if (id === undefined) id = this.current;
-        if (id < 0 || id >= this.images.length) return
-        const r = this.config.hiDPI ? window.devicePixelRatio : 1;
-        const cw = this.ctx.canvas.width / r;
-        const ch = this.ctx.canvas.height / r;
-        const ca = cw / ch;
-        const img = this.images[id];
-        const ia = img.width / img.height;
-        let iw, ih;
+	drawImage(id) {
+		if (id === undefined) id = this.current;
+		if (id < 0 || id >= this.images.length) return
+		const r = this.config.hiDPI ? window.devicePixelRatio : 1;
+		const cw = this.ctx.canvas.width / r;
+		const ch = this.ctx.canvas.height / r;
+		const ca = cw / ch;
+		const img = this.images[id];
+		const ia = img.width / img.height;
+		let iw, ih;
 
-        if (this.config.scaleMode == 'cover') {
-            if (ca > ia) {
-                iw = cw;
-                ih = iw / ia;
-            } else {
-                ih = ch;
-                iw = ih * ia;
-            }
-        } else if (this.config.scaleMode == 'contain') {
-            if (ca < ia) {
-                iw = cw;
-                ih = iw / ia;
-            } else {
-                ih = ch;
-                iw = ih * ia;
-            }
-        } else { //this.config.scaleMode == 'auto'
-            iw = img.width;
-            ih = img.height;
-        }
+		if (this.config.scaleMode == 'cover') {
+			if (ca > ia) {
+				iw = cw;
+				ih = iw / ia;
+			} else {
+				ih = ch;
+				iw = ih * ia;
+			}
+		} else if (this.config.scaleMode == 'contain') {
+			if (ca < ia) {
+				iw = cw;
+				ih = iw / ia;
+			} else {
+				ih = ch;
+				iw = ih * ia;
+			}
+		} else { //this.config.scaleMode == 'auto'
+			iw = img.width;
+			ih = img.height;
+		}
 
-        const ox = (cw/2 - iw/2);
-        const oy = (ch/2 - ih/2);
+		const ox = (cw/2 - iw/2);
+		const oy = (ch/2 - ih/2);
 
-        this.ctx.save();
-        this.ctx.scale(r, r);
-        this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
-        this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~(ox), ~~(oy), ~~iw, ~~ih);
-        this.ctx.restore();
-    }
+		this.ctx.save();
+		this.ctx.scale(r, r);
+		this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
+		this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~(ox), ~~(oy), ~~iw, ~~ih);
+		this.ctx.restore();
+	}
 
-    size(w, h) {
-        const r = this.config.hiDPI ? window.devicePixelRatio : 1;
-        const c = this.ctx.canvas;
-        c.width = w * r;
-        c.height = h * r;
-        c.style.width = w + 'px';
-        c.style.height = h + 'px';
-        this.drawImage();
-    }
+	size(w, h) {
+		const r = this.config.hiDPI ? window.devicePixelRatio : 1;
+		const c = this.ctx.canvas;
+		c.width = w * r;
+		c.height = h * r;
+		c.style.width = w + 'px';
+		c.style.height = h + 'px';
+		this.drawImage();
+	}
 }
 
 // -- Callback functions for the sequencer object -----------------------------------
 
 function imageLoad(self, e) {
-    if (e.id > self.lastLoaded && self.config.showLoadedImages) { // to not have a back and forward hickup… but some images will be skipped
-        self.drawImage(e.id);
-        self.lastLoaded = e.id;
-    }
+	if (e.id > self.lastLoaded && self.config.showLoadedImages) { // to not have a back and forward hickup… but some images will be skipped
+		self.drawImage(e.id);
+		self.lastLoaded = e.id;
+	}
 
-    if (typeof self.config.imageLoad === 'function' ) {
-        e.sequencer = self;
-        self.config.imageLoad(e);
-    }
+	if (typeof self.config.imageLoad === 'function' ) {
+		e.sequencer = self;
+		self.config.imageLoad(e);
+	}
 
-    if (typeof self.imageLoad === 'function' ) {
-        e.sequencer = self;
-        self.imageLoad(e);
-    }
+	if (typeof self.imageLoad === 'function' ) {
+		e.sequencer = self;
+		self.imageLoad(e);
+	}
 
-    // The canvas size is determined and set from the first image loaded:
-    if (e.id === 0) {
-        if(self.config.fitFirstImage) {
-            self.size(e.img.width, e.img.height);
-            self.config.fitFirstImage = false;
-        }
-        self.drawImage(0);
-        self.current = 0; // TODO: could be better
-    }
+	// The canvas size is determined and set from the first image loaded:
+	if (e.id === 0) {
+		if(self.config.fitFirstImage) {
+			self.size(e.img.width, e.img.height);
+			self.config.fitFirstImage = false;
+		}
+		self.drawImage(0);
+		self.current = 0; // TODO: could be better
+	}
 }
 
 function queueComplete(self, e) {
-    if (typeof self.config.queueComplete === 'function' ) {
-        e.sequencer = self;
-        self.config.queueComplete(e);
-    }
+	if (typeof self.config.queueComplete === 'function' ) {
+		e.sequencer = self;
+		self.config.queueComplete(e);
+	}
 
-    if (typeof self.queueComplete === 'function' ) {
-        self.queueComplete(e);
-    }
+	if (typeof self.queueComplete === 'function' ) {
+		self.queueComplete(e);
+	}
 
-    self.run();
-    if (!self.config.showLoadedImages && self.config.playMode !== 'none') {
-        self.drawImage(0);
-    }
+	self.run();
+	if (!self.config.showLoadedImages && self.config.playMode !== 'none') {
+		self.drawImage(0);
+	}
 }
 
 function pointerDown(self, e) {
-    let ox, oy;
-    if (e.touches) {
-        ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-        oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
-    } else {
-        ox = e.offsetX;
-        oy = e.offsetY;
-    }
+	let ox, oy;
+	if (e.touches) {
+		ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+		oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
+	} else {
+		ox = e.offsetX;
+		oy = e.offsetY;
+	}
 
-    self.pointer = {
-        x    : ox,
-        y    : oy,
-        down : true,
-        currentId : self.current // TODO: this is a hack and needs a better solution...
-    };
+	self.pointer = {
+		x    : ox,
+		y    : oy,
+		down : true,
+		currentId : self.current // TODO: this is a hack and needs a better solution...
+	};
 }
 
 function pointerUp(self, e) {
-    self.pointer.down = false;
+	self.pointer.down = false;
 }
 
 function relativeMove(self, e) {
-    if (!self.pointer.down) return
+	if (!self.pointer.down) return
 
-    const t = self.images.length;
+	const t = self.images.length;
 
-    let ox, oy;
-    if (e.touches) {
-        ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-        oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
-    } else {
-        ox = e.offsetX;
-        oy = e.offsetY;
-    }
+	let ox, oy;
+	if (e.touches) {
+		ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+		oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
+	} else {
+		ox = e.offsetX;
+		oy = e.offsetY;
+	}
 
-    let dist = 0;
-    if (/x/.test(self.config.direction)) {
-        dist = (ox - self.pointer.x) * self.directionSign;
-    } else if (/y/.test(self.config.direction)) {
-        dist = (oy - self.pointer.y) * self.directionSign;
-    }
+	let dist = 0;
+	if (/x/.test(self.config.direction)) {
+		dist = (ox - self.pointer.x) * self.directionSign;
+	} else if (/y/.test(self.config.direction)) {
+		dist = (oy - self.pointer.y) * self.directionSign;
+	}
 
-    let id = self.pointer.currentId + Math.floor(dist / self.config.dragAmount);
-    if (id < 0) id = t - (-id % t);
-    else if (id > t) id = id % t;
+	let id = self.pointer.currentId + Math.floor(dist / self.config.dragAmount);
+	if (id < 0) id = t - (-id % t);
+	else if (id > t) id = id % t;
 
-    if (id != self.current) {
-        self.drawImage(id);
-        self.current = id;
-    }
+	if (id != self.current) {
+		self.drawImage(id);
+		self.current = id;
+	}
 
-    // remove bounce on mobile
-    e.preventDefault();
+	// remove bounce on mobile
+	e.preventDefault();
 }
 
 function constrain(v, a, b){
-    if (v < a) return a
-    if (v > b) return b
-    return v
+	if (v < a) return a
+	if (v > b) return b
+	return v
 }
 
 function absoluteMove(self, e) {
 
-    const t = self.images.length;
-    const r = self.config.hiDPI ? window.devicePixelRatio : 1;
+	const t = self.images.length;
+	const r = self.config.hiDPI ? window.devicePixelRatio : 1;
 
-    let ox, oy;
-    if (e.touches) {
-        ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-        oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
-    } else {
-        ox = e.offsetX;
-        oy = e.offsetY;
-    }
+	let ox, oy;
+	if (e.touches) {
+		ox = e.touches[0].pageX - e.touches[0].target.offsetLeft;
+		oy = e.touches[0].pageY - e.touches[0].target.offsetTop;
+	} else {
+		ox = e.offsetX;
+		oy = e.offsetY;
+	}
 
-    let m, w;
-    if (self.config.direction == 'x') {
-        w = self.ctx.canvas.width / r;
-        m = ox;
-    } else if (self.config.direction == '-x') {
-        w = self.ctx.canvas.width / r;
-        m = w - ox - 1;
-    } else if (self.config.direction == 'y') {
-        w = self.ctx.canvas.height / r;
-        m = oy;
-    } else if (self.config.direction == '-y') {
-        w = self.ctx.canvas.height / r;
-        m = w - oy - 1;
-    }
+	let m, w;
+	if (self.config.direction == 'x') {
+		w = self.ctx.canvas.width / r;
+		m = ox;
+	} else if (self.config.direction == '-x') {
+		w = self.ctx.canvas.width / r;
+		m = w - ox - 1;
+	} else if (self.config.direction == 'y') {
+		w = self.ctx.canvas.height / r;
+		m = oy;
+	} else if (self.config.direction == '-y') {
+		w = self.ctx.canvas.height / r;
+		m = w - oy - 1;
+	}
 
-    const id = constrain(Math.floor(m / w * t), 0, t - 1);
-    if (id != self.current) {
-        self.drawImage(id);
-        self.current = id;
-    }
+	const id = constrain(Math.floor(m / w * t), 0, t - 1);
+	if (id != self.current) {
+		self.drawImage(id);
+		self.current = id;
+	}
 
-    // remove bounce on mobile
-    e.preventDefault();
+	// remove bounce on mobile
+	e.preventDefault();
 }
 
 // TODO: break out in own module
 function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCallbak) {
-    const concurrentLoads = Math.min(fileList.length, 4);
-    let current = arrayToPopulate.length - 1; // id: order in array
-    let count = arrayToPopulate.length;       // count: count of image loaded... can be out of sync of id.
-    for (let i=0; i<concurrentLoads; i++) loadNext();
+	const concurrentLoads = Math.min(fileList.length, 4);
+	let current = arrayToPopulate.length - 1; // id: order in array
+	let count = arrayToPopulate.length;       // count: count of image loaded... can be out of sync of id.
+	for (let i=0; i<concurrentLoads; i++) loadNext();
 
-    function loadNext() {
-        if (current >= fileList.length -1) return
-        current++;
+	function loadNext() {
+		if (current >= fileList.length -1) return
+		current++;
 
-        //console.log('Loading ' + fileList[current] + '...')
-        const img = new Image();
-        img.src = fileList[current]
-        ;(function(id) {    // TODO: fix
-            img.onload = e => {
-                if (typeof imageLoadCallback === 'function') imageLoadCallback({
-                    id    : id,
-                    img   : img,
-                    count : ++count,
-                    total : fileList.length
-                });
-                if (count < fileList.length ) {
-                    loadNext();
-                }
-                if (count == fileList.length) {
-                    if (typeof queueCompleteCallbak === 'function') queueCompleteCallbak({
-                        total : fileList.length
-                    });
-                }
-            };
-            img.onerror = e => {
-                console.error('Error with: ' + fileList[id]);
-            };
-        })(current);
-        arrayToPopulate.push(img);
-    }
+		//console.log('Loading ' + fileList[current] + '...')
+		const img = new Image();
+		img.src = fileList[current]
+		;(function(id) {    // TODO: fix
+			img.onload = e => {
+				if (typeof imageLoadCallback === 'function') imageLoadCallback({
+					id    : id,
+					img   : img,
+					count : ++count,
+					total : fileList.length
+				});
+				if (count < fileList.length ) {
+					loadNext();
+				}
+				if (count == fileList.length) {
+					if (typeof queueCompleteCallbak === 'function') queueCompleteCallbak({
+						total : fileList.length
+					});
+				}
+			};
+			img.onerror = e => {
+				console.error('Error with: ' + fileList[id]);
+			};
+		})(current);
+		arrayToPopulate.push(img);
+	}
 }
 
 var sequencer = {
-    make      : make,
-    instances : instances
+	make      : make,
+	instances : instances
 };
 
 export default sequencer;
