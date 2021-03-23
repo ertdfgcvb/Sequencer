@@ -8,9 +8,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "./node_modules/.bin/rollup --config --watch --environment WATCH",
-    "build": "./node_modules/.bin/rollup --config"
+    "build": "make"
   },
   "repository": {
     "type": "git",
@@ -20,9 +18,5 @@
   "bugs": {
     "url": "https://github.com/ertdfgcvb/Sequencer/issues"
   },
-  "homepage": "https://github.com/ertdfgcvb/Sequencer#readme",
-  "dependencies": {
-    "rollup": "^2.10.9",
-    "rollup-plugin-terser": "^6.0.1"
-  }
+  "homepage": "http://sequencer.ertdfgcvb.xyz",
 }
