@@ -93,8 +93,8 @@ function warn(msg) {
 /**
  * Sequencer - A fast(?) fullscreen image-sequence player.
  * See README or visit github (link below) for details.
- * @copyright 2012-20
- * @version 3.0.0b
+ * @copyright 2012-21
+ * @version 3.0.1
  * @author Andreas Gysin
  *         https://ertdfgcvb.xyz
  *         https://github.com/ertdfgcvb/Sequencer
@@ -126,7 +126,8 @@ class S{
 			fitFirstImage    : false,   // resizes the canvas to the size of the first loaded image in the sequence
 			showLoadedImages : false,   // don't display images while loading
 			dragAmount       : 10,
-			hiDPI            : true,
+			hiDPI            : true,    // use hiDPI canvas
+			smoothing        : true,    // sets the context imageSmoothingEnabled flag
 		};
 
 		this.config = {...defaults, ...opts};
@@ -252,8 +253,9 @@ class S{
 
 		this.ctx.save();
 		this.ctx.scale(r, r);
-		this.ctx.clearRect(0, 0, cw, ch);  // support for images with alpha
-		this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~(ox), ~~(oy), ~~iw, ~~ih);
+		this.ctx.clearRect(0, 0, cw, ch);                       // Clear background to support images with alpha
+		this.ctx.imageSmoothingEnabled = this.config.smoothing; // Needs to be set before draw?
+		this.ctx.drawImage(img, 0, 0, img.width, img.height, Math.floor(ox), Math.floor(oy), Math.floor(iw), Math.floor(ih));
 		this.ctx.restore();
 	}
 
@@ -454,8 +456,8 @@ function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCa
 }
 
 var sequencer = {
-	make      : make,
-	instances : instances
+	make,
+	instances
 };
 
-export default sequencer;
+export { sequencer as default };
