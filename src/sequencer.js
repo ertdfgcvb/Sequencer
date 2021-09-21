@@ -2,7 +2,7 @@
  * Sequencer - A fast(?) fullscreen image-sequence player.
  * See README or visit github (link below) for details.
  * @copyright 2012-20
- * @version 3.0.0b
+ * @version 3.0.1
  * @author Andreas Gysin
  *         https://ertdfgcvb.xyz
  *         https://github.com/ertdfgcvb/Sequencer
