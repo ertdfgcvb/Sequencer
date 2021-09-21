@@ -367,6 +367,6 @@ function Preloader(arrayToPopulate, fileList, imageLoadCallback, queueCompleteCa
 }
 
 export default {
-	make      : make,
-	instances : instances
+	make,
+	instances
 }
