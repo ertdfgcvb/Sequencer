@@ -37,7 +37,8 @@ class S{
 			fitFirstImage    : false,   // resizes the canvas to the size of the first loaded image in the sequence
 			showLoadedImages : false,   // don't display images while loading
 			dragAmount       : 10,
-			hiDPI            : true,
+			hiDPI            : true,    // use hiDPI canvas
+			smoothing        : true,    // sets the context imageSmoothingEnabled flag
 		}
 
 		this.config = {...defaults, ...opts}
@@ -163,8 +164,9 @@ class S{
 
 		this.ctx.save()
 		this.ctx.scale(r, r)
-		this.ctx.clearRect(0, 0, cw, ch)  // support for images with alpha
-		this.ctx.drawImage(img, 0, 0, img.width, img.height, ~~(ox), ~~(oy), ~~iw, ~~ih)
+		this.ctx.clearRect(0, 0, cw, ch)                       // Clear background to support images with alpha
+		this.ctx.imageSmoothingEnabled = this.config.smoothing // Needs to be set before draw?
+		this.ctx.drawImage(img, 0, 0, img.width, img.height, Math.floor(ox), Math.floor(oy), Math.floor(iw), Math.floor(ih))
 		this.ctx.restore()
 	}
 
