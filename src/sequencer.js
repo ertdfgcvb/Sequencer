@@ -166,7 +166,7 @@ class S{
 		this.ctx.scale(r, r)
 		this.ctx.clearRect(0, 0, cw, ch)                       // Clear background to support images with alpha
 		this.ctx.imageSmoothingEnabled = this.config.smoothing // Needs to be set before draw?
-		this.ctx.drawImage(img, 0, 0, img.width, img.height, Math.floor(ox), Math.floor(oy), Math.floor(iw), Math.floor(ih))
+		this.ctx.drawImage(img, 0, 0, img.width, img.height, Math.floor(ox), Math.floor(oy), Math.ceil(iw), Math.ceil(ih))
 		this.ctx.restore()
 	}
 
